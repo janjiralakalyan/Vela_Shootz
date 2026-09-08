@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 90" fill="none">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF2C6" />
+      <stop offset="35%" stop-color="#E5AD36" />
+      <stop offset="70%" stop-color="#C68F24" />
+      <stop offset="100%" stop-color="#FCE18A" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E5AD36" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#2E000E" stop-opacity="0" />
+    </linearGradient>
+    <filter id="goldGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Aperture / Shutter Mark -->
+  <g transform="translate(15, 10)">
+    <!-- Outer Ring -->
+    <circle cx="35" cy="35" r="32" stroke="url(#goldGrad)" stroke-width="2.5" fill="none" opacity="0.9" />
+    <!-- Dynamic Shutter Blades -->
+    <path d="M 35 7 L 46 28 L 30 25 Z" fill="url(#goldGrad)" />
+    <path d="M 61 24 L 46 41 L 43 27 Z" fill="url(#goldGrad)" />
+    <path d="M 59 52 L 38 52 L 47 38 Z" fill="url(#goldGrad)" />
+    <path d="M 35 63 L 24 42 L 40 45 Z" fill="url(#goldGrad)" />
+    <path d="M 9 46 L 24 29 L 27 43 Z" fill="url(#goldGrad)" />
+    <path d="M 11 18 L 32 18 L 23 32 Z" fill="url(#goldGrad)" />
+    <!-- Inner Lens Sparkle -->
+    <circle cx="35" cy="35" r="6" fill="#FFF2C6" filter="url(#goldGlow)" />
+  </g>
+
+  <!-- Typography -->
+  <text x="100" y="44" font-family="'Outfit', 'Plus Jakarta Sans', sans-serif" font-size="34" font-weight="900" letter-spacing="4" fill="url(#goldGrad)">VELA</text>
+  <text x="212" y="44" font-family="'Outfit', 'Plus Jakarta Sans', sans-serif" font-size="34" font-weight="300" letter-spacing="6" fill="#FAF0E6">SHOOTZ</text>
+  
+  <!-- Subtitle Tagline -->
+  <text x="102" y="66" font-family="'Outfit', sans-serif" font-size="9" font-weight="600" letter-spacing="5.5" fill="#E5AD36" opacity="0.85">SHOOT • EDIT • POST</text>
+</svg>
