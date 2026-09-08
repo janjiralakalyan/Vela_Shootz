@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
-import { Search, CheckCircle2, Clock, Smartphone, Video, Wand2, Download, AlertCircle, Calendar, MapPin, User, ShieldCheck } from 'lucide-react';
+import {
+  Search, CheckCircle2, Clock, Smartphone, Video, Wand2,
+  Download, AlertCircle, Calendar, MapPin, User, ShieldCheck, Loader2
+} from 'lucide-react';
 import { findBookingByReference } from '../data/storage';
 
 export function BookingStatusPage({ navigateTo }) {
-  const [referenceId, setReferenceId] = useState('VS-2026-00124'); // default sample seed
+  const [referenceId, setReferenceId] = useState('');
   const [contactVerify, setContactVerify] = useState('');
   const [searched, setSearched] = useState(false);
   const [booking, setBooking] = useState(null);
   const [errorMsg, setErrorMsg] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
     setErrorMsg('');
     if (!referenceId.trim()) {
@@ -17,14 +21,22 @@ export function BookingStatusPage({ navigateTo }) {
       return;
     }
 
-    const found = findBookingByReference(referenceId, contactVerify);
-    if (found) {
-      setBooking(found);
-      setSearched(true);
-    } else {
-      setBooking(null);
-      setSearched(true);
-      setErrorMsg('No booking found matching that Reference ID and verification. Please check and try again.');
+    setIsSearching(true);
+    try {
+      const found = await findBookingByReference(referenceId, contactVerify);
+      if (found) {
+        setBooking(found);
+        setSearched(true);
+      } else {
+        setBooking(null);
+        setSearched(true);
+        setErrorMsg('No booking found matching that Reference ID and verification. Please check and try again.');
+      }
+    } catch (err) {
+      setErrorMsg('Error connecting to the database. Please check your connection and try again.');
+      console.error(err);
+    } finally {
+      setIsSearching(false);
     }
   };
 
@@ -57,7 +69,7 @@ export function BookingStatusPage({ navigateTo }) {
   return (
     <div style={{ paddingTop: '2rem', paddingBottom: '6rem' }}>
       <div className="container-narrow">
-        
+
         <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <span className="section-tag">LIVE STATUS TRACKER</span>
           <h1 style={{ fontSize: 'clamp(2.2rem, 5vw, 3.4rem)', color: '#FFF', marginBottom: '0.6rem' }}>
@@ -71,11 +83,7 @@ export function BookingStatusPage({ navigateTo }) {
         {/* SEARCH FORM */}
         <div
           className="glass-card"
-          style={{
-            padding: '2rem',
-            border: '1px solid var(--gold-border)',
-            marginBottom: '3rem'
-          }}
+          style={{ padding: '2rem', border: '1px solid var(--gold-border)', marginBottom: '3rem' }}
         >
           <form onSubmit={handleSearch}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.2rem', alignItems: 'end' }}>
@@ -88,17 +96,14 @@ export function BookingStatusPage({ navigateTo }) {
                   required
                   value={referenceId}
                   onChange={(e) => setReferenceId(e.target.value)}
-                  placeholder="e.g. VS-2026-00124"
+                  placeholder="e.g. VS-2026-00127"
                   style={{
-                    width: '100%',
-                    padding: '0.85rem 1rem',
+                    width: '100%', padding: '0.85rem 1rem',
                     borderRadius: 'var(--radius-sm)',
                     background: 'rgba(34, 0, 11, 0.9)',
                     border: '1px solid var(--gold-border)',
-                    color: '#FFF',
-                    fontFamily: 'var(--font-mono)',
-                    fontSize: '1rem',
-                    fontWeight: '700'
+                    color: '#FFF', fontFamily: 'var(--font-mono)',
+                    fontSize: '1rem', fontWeight: '700'
                   }}
                 />
               </div>
@@ -113,24 +118,26 @@ export function BookingStatusPage({ navigateTo }) {
                   onChange={(e) => setContactVerify(e.target.value)}
                   placeholder="Optional verification"
                   style={{
-                    width: '100%',
-                    padding: '0.85rem 1rem',
+                    width: '100%', padding: '0.85rem 1rem',
                     borderRadius: 'var(--radius-sm)',
                     background: 'rgba(34, 0, 11, 0.9)',
                     border: '1px solid var(--gold-border)',
-                    color: '#FFF',
-                    fontSize: '0.95rem'
+                    color: '#FFF', fontSize: '0.95rem'
                   }}
                 />
               </div>
 
               <button
                 type="submit"
+                disabled={isSearching}
                 className="btn-primary"
-                style={{ padding: '0.9rem 1.6rem', height: '48px', fontSize: '0.92rem' }}
+                style={{ padding: '0.9rem 1.6rem', height: '48px', fontSize: '0.92rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
               >
-                <Search size={16} />
-                <span>TRACK STATUS</span>
+                {isSearching
+                  ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
+                  : <Search size={16} />
+                }
+                <span>{isSearching ? 'SEARCHING…' : 'TRACK STATUS'}</span>
               </button>
             </div>
           </form>
@@ -147,21 +154,14 @@ export function BookingStatusPage({ navigateTo }) {
         {booking && (
           <div
             className="glass-card"
-            style={{
-              padding: '2.5rem',
-              border: '1px solid var(--gold-border-hover)'
-            }}
+            style={{ padding: '2.5rem', border: '1px solid var(--gold-border-hover)' }}
           >
             {/* TOP HEADER SUMMARY */}
             <div
               style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: '1rem',
-                paddingBottom: '1.5rem',
-                borderBottom: '1px solid rgba(229, 173, 54, 0.15)',
+                display: 'flex', flexWrap: 'wrap', alignItems: 'center',
+                justifyContent: 'space-between', gap: '1rem',
+                paddingBottom: '1.5rem', borderBottom: '1px solid rgba(229, 173, 54, 0.15)',
                 marginBottom: '2.5rem'
               }}
             >
@@ -184,15 +184,13 @@ export function BookingStatusPage({ navigateTo }) {
                     color: '#2ECC71',
                     padding: '0.35rem 0.9rem',
                     borderRadius: 'var(--radius-full)',
-                    fontSize: '0.78rem',
-                    fontWeight: '800',
-                    textTransform: 'uppercase'
+                    fontSize: '0.78rem', fontWeight: '800', textTransform: 'uppercase'
                   }}
                 >
                   CURRENT STATUS: {booking.status}
                 </span>
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-dim)', marginTop: '0.4rem' }}>
-                  Payment: {booking.paymentStatus} (₹{booking.totalAmount.toLocaleString('en-IN')})
+                  Payment: {booking.paymentStatus} (₹{booking.totalAmount?.toLocaleString('en-IN') || '—'})
                 </div>
               </div>
             </div>
@@ -207,14 +205,12 @@ export function BookingStatusPage({ navigateTo }) {
                 style={{
                   display: 'grid',
                   gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
-                  gap: '0.8rem',
-                  position: 'relative'
+                  gap: '0.8rem', position: 'relative'
                 }}
               >
                 {milestones.map((m, idx) => {
                   const isDone = idx <= activeIndex;
                   const isCurrent = idx === activeIndex;
-
                   return (
                     <div
                       key={m.key}
@@ -223,33 +219,21 @@ export function BookingStatusPage({ navigateTo }) {
                         borderRadius: 'var(--radius-sm)',
                         background: isCurrent
                           ? 'rgba(229, 173, 54, 0.15)'
-                          : isDone
-                          ? 'rgba(46, 204, 113, 0.1)'
-                          : 'rgba(34, 0, 11, 0.5)',
+                          : isDone ? 'rgba(46, 204, 113, 0.1)' : 'rgba(34, 0, 11, 0.5)',
                         border: isCurrent
                           ? '1px solid var(--gold-primary)'
-                          : isDone
-                          ? '1px solid rgba(46, 204, 113, 0.4)'
-                          : '1px solid rgba(255, 255, 255, 0.05)',
+                          : isDone ? '1px solid rgba(46, 204, 113, 0.4)' : '1px solid rgba(255, 255, 255, 0.05)',
                         textAlign: 'center',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        gap: '0.4rem'
+                        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem'
                       }}
                     >
                       <div
                         style={{
-                          width: '24px',
-                          height: '24px',
-                          borderRadius: '50%',
+                          width: '24px', height: '24px', borderRadius: '50%',
                           background: isDone ? '#2ECC71' : 'rgba(255, 255, 255, 0.1)',
                           color: '#1A0008',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '0.75rem',
-                          fontWeight: '900'
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: '0.75rem', fontWeight: '900'
                         }}
                       >
                         {isDone ? <CheckCircle2 size={16} color="#FFF" /> : idx + 1}
@@ -272,14 +256,10 @@ export function BookingStatusPage({ navigateTo }) {
             {/* EVENT SPECS GRID */}
             <div
               style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-                gap: '1.5rem',
-                background: 'rgba(34, 0, 11, 0.6)',
-                padding: '1.5rem',
-                borderRadius: 'var(--radius-md)',
-                border: '1px solid var(--gold-border)',
-                marginBottom: '2rem'
+                display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '1.5rem', background: 'rgba(34, 0, 11, 0.6)',
+                padding: '1.5rem', borderRadius: 'var(--radius-md)',
+                border: '1px solid var(--gold-border)', marginBottom: '2rem'
               }}
             >
               <div>
@@ -287,19 +267,16 @@ export function BookingStatusPage({ navigateTo }) {
                 <div style={{ fontSize: '1rem', fontWeight: '800', color: '#FFF' }}>{booking.packageName}</div>
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Duration: {booking.duration}</div>
               </div>
-
               <div>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>Shoot Date & Slot</div>
                 <div style={{ fontSize: '1rem', fontWeight: '800', color: '#FFF' }}>{booking.date}</div>
                 <div style={{ fontSize: '0.8rem', color: 'var(--gold-bright)' }}>{booking.startTime}</div>
               </div>
-
               <div>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>Location</div>
                 <div style={{ fontSize: '1rem', fontWeight: '800', color: '#FFF' }}>{booking.location}</div>
                 <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Event: {booking.eventType}</div>
               </div>
-
               <div>
                 <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>Assigned Crew</div>
                 <div style={{ fontSize: '1rem', fontWeight: '800', color: 'var(--gold-bright)' }}>
@@ -309,15 +286,14 @@ export function BookingStatusPage({ navigateTo }) {
               </div>
             </div>
 
-            {/* REELS READY DOWNLOAD BOX (APPEARS WHEN READY/DELIVERED) */}
+            {/* REELS READY DOWNLOAD BOX */}
             {activeIndex >= 6 && (
               <div
                 style={{
                   background: 'linear-gradient(135deg, rgba(80, 4, 30, 0.95), rgba(40, 0, 14, 0.95))',
                   border: '2px solid var(--gold-primary)',
                   borderRadius: 'var(--radius-md)',
-                  padding: '2rem',
-                  textAlign: 'center',
+                  padding: '2rem', textAlign: 'center',
                   boxShadow: 'var(--shadow-gold)'
                 }}
               >

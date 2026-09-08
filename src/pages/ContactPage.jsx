@@ -17,19 +17,23 @@ export function ContactPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    createEnquiry({
-      ...formData,
-      specialRequirements: formData.message,
-      type: 'Contact Form Lead'
-    });
+    try {
+      await createEnquiry({
+        ...formData,
+        specialRequirements: formData.message,
+        type: 'Contact Form Lead'
+      });
+    } catch (err) {
+      console.error('Contact form error:', err);
+    }
     setSubmitted(true);
   };
 
   const handleWhatsAppDirect = () => {
     const text = 'Hello Vela Shootz! I would like to enquire about your availability for an upcoming shoot.';
-    window.open(`https://wa.me/919876543210?text=${encodeURIComponent(text)}`, '_blank');
+    window.open(`https://wa.me/917095891554?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   return (
@@ -91,7 +95,7 @@ export function ContactPage() {
                       onClick={handleWhatsAppDirect}
                       style={{ color: '#25D366', fontWeight: '700', fontSize: '1rem', textAlign: 'left' }}
                     >
-                      +91 98765 43210 (Instant Response)
+                      +91 70958 91554 (Instant Response)
                     </button>
                   </div>
                 </div>

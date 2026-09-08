@@ -6,7 +6,7 @@ export function MobileActionBar({ navigateTo }) {
   const { selectedPackage } = useBooking();
 
   const handleWhatsApp = () => {
-    const phone = '919876543210';
+    const phone = '917095891554';
     let text = 'Hello Vela Shootz! I would like to enquire about booking a shoot.';
     if (selectedPackage) {
       text = `Hello Vela Shootz! I am interested in booking the "${selectedPackage.name}" package. Are slots open for an upcoming date?`;

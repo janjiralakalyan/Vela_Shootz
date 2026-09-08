@@ -1,242 +1,354 @@
-// Storage management for Vela Shootz
-// Handles reactive local storage persistence with initial seeds fallback
+// ============================================================
+// VELA SHOOTZ — SUPABASE STORAGE LAYER
+// All data operations go through Supabase instead of localStorage
+// ============================================================
 
-import {
-  INITIAL_PACKAGES,
-  INITIAL_PORTFOLIO,
-  INITIAL_EVENTS,
-  INITIAL_PROMOTIONS,
-  INITIAL_TESTIMONIALS,
-  INITIAL_FAQS,
-  INITIAL_BOOKINGS,
-  INITIAL_ENQUIRIES,
-  TIME_SLOTS
-} from './initialData';
+import { supabase } from '../lib/supabase';
+import { INITIAL_PACKAGES, INITIAL_PORTFOLIO, INITIAL_EVENTS, TIME_SLOTS } from './initialData';
+import { sendAdminWhatsAppAlert } from '../services/whatsappAlert';
 
-const STORAGE_KEYS = {
-  PACKAGES: 'vs_packages_v1',
-  PORTFOLIO: 'vs_portfolio_v1',
-  EVENTS: 'vs_events_v1',
-  PROMOTIONS: 'vs_promotions_v1',
-  BOOKINGS: 'vs_bookings_v1',
-  ENQUIRIES: 'vs_enquiries_v1',
-  BLOCKED_SLOTS: 'vs_blocked_slots_v1',
-  ADMIN_AUTH: 'vs_admin_auth_v1'
-};
+// Re-export TIME_SLOTS for consumers
+export { TIME_SLOTS };
 
-function getItem(key, fallback) {
-  try {
-    const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : fallback;
-  } catch (e) {
-    console.error('Storage getItem error:', e);
-    return fallback;
+// ============================================================
+// PACKAGES
+// ============================================================
+export const getPackages = async () => {
+  const { data, error } = await supabase
+    .from('packages')
+    .select('*')
+    .order('created_at', { ascending: true });
+
+  if (error || !data || data.length === 0) {
+    // Fallback to initial data if DB is empty or errored
+    return INITIAL_PACKAGES;
   }
-}
 
-function setItem(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch (e) {
-    console.error('Storage setItem error:', e);
-  }
-}
-
-// PACKAGES & PRICING
-export const getPackages = () => getItem(STORAGE_KEYS.PACKAGES, INITIAL_PACKAGES);
-
-export const savePackages = (packages) => setItem(STORAGE_KEYS.PACKAGES, packages);
-
-export const updatePackage = (updatedPkg) => {
-  const pkgs = getPackages().map(p => p.id === updatedPkg.id ? updatedPkg : p);
-  savePackages(pkgs);
-  return pkgs;
+  // Map snake_case DB columns back to camelCase for the UI
+  return data.map(mapPackageFromDb);
 };
 
-// PORTFOLIO
-export const getPortfolio = () => getItem(STORAGE_KEYS.PORTFOLIO, INITIAL_PORTFOLIO);
-
-export const savePortfolio = (items) => setItem(STORAGE_KEYS.PORTFOLIO, items);
-
-export const addPortfolioItem = (newItem) => {
-  const current = getPortfolio();
-  const updated = [{ ...newItem, id: 'proj-' + Date.now() }, ...current];
-  savePortfolio(updated);
-  return updated;
+export const savePackages = async (packages) => {
+  // Upsert each package
+  const rows = packages.map(mapPackageToDb);
+  const { error } = await supabase.from('packages').upsert(rows, { onConflict: 'id' });
+  if (error) console.error('savePackages error:', error);
 };
 
-export const deletePortfolioItem = (id) => {
-  const updated = getPortfolio().filter(p => p.id !== id);
-  savePortfolio(updated);
-  return updated;
+export const updatePackage = async (updatedPkg) => {
+  const { error } = await supabase
+    .from('packages')
+    .upsert(mapPackageToDb(updatedPkg), { onConflict: 'id' });
+  if (error) console.error('updatePackage error:', error);
+  return getPackages();
 };
 
-// EVENTS
-export const getEvents = () => getItem(STORAGE_KEYS.EVENTS, INITIAL_EVENTS);
-
-export const saveEvents = (events) => setItem(STORAGE_KEYS.EVENTS, events);
-
-export const addEvent = (event) => {
-  const current = getEvents();
-  const updated = [{ ...event, id: 'evt-' + Date.now() }, ...current];
-  saveEvents(updated);
-  return updated;
-};
-
-export const updateEvent = (event) => {
-  const updated = getEvents().map(e => e.id === event.id ? event : e);
-  saveEvents(updated);
-  return updated;
-};
-
-export const deleteEvent = (id) => {
-  const updated = getEvents().filter(e => e.id !== id);
-  saveEvents(updated);
-  return updated;
-};
-
-// PROMOTIONS
-export const getPromotions = () => getItem(STORAGE_KEYS.PROMOTIONS, INITIAL_PROMOTIONS);
-
-export const savePromotions = (promos) => setItem(STORAGE_KEYS.PROMOTIONS, promos);
-
-export const addPromotion = (promo) => {
-  const current = getPromotions();
-  const updated = [{ ...promo, id: 'promo-' + Date.now() }, ...current];
-  savePromotions(updated);
-  return updated;
-};
-
-export const updatePromotion = (promo) => {
-  const updated = getPromotions().map(p => p.id === promo.id ? promo : p);
-  savePromotions(updated);
-  return updated;
-};
-
-export const deletePromotion = (id) => {
-  const updated = getPromotions().filter(p => p.id !== id);
-  savePromotions(updated);
-  return updated;
-};
-
+// ============================================================
 // BOOKINGS
-export const getBookings = () => getItem(STORAGE_KEYS.BOOKINGS, INITIAL_BOOKINGS);
+// ============================================================
+export const getBookings = async () => {
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('*')
+    .order('created_at', { ascending: false });
 
-export const saveBookings = (bookings) => setItem(STORAGE_KEYS.BOOKINGS, bookings);
-
-export const generateBookingReference = () => {
-  const count = getBookings().length + 126;
-  return `VS-2026-${String(count).padStart(5, '0')}`;
-};
-
-export const createBooking = (bookingData) => {
-  const ref = generateBookingReference();
-  const newBooking = {
-    ...bookingData,
-    id: 'b-' + Date.now(),
-    bookingReference: ref,
-    status: 'Confirmed',
-    paymentStatus: 'Advance Received',
-    createdAt: new Date().toISOString()
-  };
-  const updated = [newBooking, ...getBookings()];
-  saveBookings(updated);
-  return newBooking;
-};
-
-export const updateBookingStatus = (id, status, extraFields = {}) => {
-  const updated = getBookings().map(b => {
-    if (b.id === id) {
-      return { ...b, status, ...extraFields };
-    }
-    return b;
-  });
-  saveBookings(updated);
-  return updated;
-};
-
-export const findBookingByReference = (reference, contactVerification) => {
-  const bookings = getBookings();
-  const cleanRef = reference.trim().toUpperCase();
-  const cleanContact = contactVerification ? contactVerification.trim().toLowerCase().replace(/\s+/g, '') : '';
-
-  return bookings.find(b => {
-    const matchRef = b.bookingReference.toUpperCase() === cleanRef;
-    if (!matchRef) return false;
-    if (!cleanContact) return true;
-    const bEmail = (b.email || '').toLowerCase().trim();
-    const bPhone = (b.phone || '').replace(/\s+/g, '');
-    return bEmail.includes(cleanContact) || bPhone.includes(cleanContact);
-  });
-};
-
-// BLOCKED SLOTS
-export const getBlockedSlots = () => getItem(STORAGE_KEYS.BLOCKED_SLOTS, [
-  { date: '2026-03-15', slot: '05:00 PM', reason: 'Booked (VS-2026-00124)' },
-  { date: '2026-03-22', slot: '10:00 AM', reason: 'Booked (VS-2026-00125)' }
-]);
-
-export const isSlotBookedOrBlocked = (dateStr, slotTime) => {
-  // Check in bookings
-  const bookings = getBookings();
-  const hasBooking = bookings.some(b => b.date === dateStr && b.startTime === slotTime && b.status !== 'Cancelled');
-  if (hasBooking) return true;
-
-  // Check in blocked slots
-  const blocked = getBlockedSlots();
-  return blocked.some(item => item.date === dateStr && item.slot === slotTime);
-};
-
-export const toggleSlotBlock = (dateStr, slotTime, reason = 'Admin Blocked') => {
-  const current = getBlockedSlots();
-  const exists = current.some(item => item.date === dateStr && item.slot === slotTime);
-  let updated;
-  if (exists) {
-    updated = current.filter(item => !(item.date === dateStr && item.slot === slotTime));
-  } else {
-    updated = [...current, { date: dateStr, slot: slotTime, reason }];
+  if (error) {
+    console.error('getBookings error:', error);
+    return [];
   }
-  setItem(STORAGE_KEYS.BLOCKED_SLOTS, updated);
-  return updated;
+  return (data || []).map(mapBookingFromDb);
 };
 
-// ENQUIRIES (CRM)
-export const getEnquiries = () => getItem(STORAGE_KEYS.ENQUIRIES, INITIAL_ENQUIRIES);
+export const createBooking = async (bookingData) => {
+  // Generate unique booking reference via DB function
+  const { data: refData, error: refError } = await supabase
+    .rpc('generate_booking_reference');
 
-export const saveEnquiries = (enquiries) => setItem(STORAGE_KEYS.ENQUIRIES, enquiries);
+  if (refError) {
+    console.error('generate_booking_reference error:', refError);
+    throw refError;
+  }
 
-export const createEnquiry = (enquiryData) => {
-  const newEnq = {
-    ...enquiryData,
-    id: 'enq-' + Date.now(),
-    status: 'New',
-    notes: 'Inquiry received via website.',
-    createdAt: new Date().toISOString()
+  const bookingRef = refData;
+  const bookingId = 'b-' + Date.now();
+
+  const newBooking = {
+    id: bookingId,
+    booking_reference: bookingRef,
+    customer_name: bookingData.customerName,
+    phone: bookingData.phone,
+    email: bookingData.email,
+    package_id: bookingData.packageId,
+    package_name: bookingData.packageName,
+    event_type: bookingData.eventType,
+    date: bookingData.date,
+    start_time: bookingData.startTime,
+    duration: bookingData.duration,
+    location: bookingData.location,
+    people_count: bookingData.peopleCount,
+    instagram: bookingData.instagram,
+    requirements: bookingData.requirements,
+    reference_links: bookingData.referenceLinks,
+    addons: bookingData.addons || [],
+    applied_promotion: bookingData.appliedPromotion,
+    total_amount: bookingData.totalAmount,
+    status: 'Confirmed',
+    payment_status: 'Advance Received',
+    assigned_to: null,
+    reels_ready_url: '',
+    created_at: new Date().toISOString()
   };
-  const updated = [newEnq, ...getEnquiries()];
-  saveEnquiries(updated);
-  return newEnq;
+
+  const { data, error } = await supabase
+    .from('bookings')
+    .insert(newBooking)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('createBooking error:', error);
+    throw error;
+  }
+
+  const mappedBooking = mapBookingFromDb(data);
+  // Trigger free automated WhatsApp alert to admin phone asynchronously
+  sendAdminWhatsAppAlert(mappedBooking).catch(err => console.warn('[WhatsApp Alert Error]', err));
+
+  return mappedBooking;
 };
 
-export const updateEnquiryStatus = (id, status, notes) => {
-  const updated = getEnquiries().map(e => {
-    if (e.id === id) {
-      return {
-        ...e,
-        status: status || e.status,
-        notes: notes !== undefined ? notes : e.notes
-      };
+export const updateBookingStatus = async (id, status, extraFields = {}) => {
+  const updateData = { status };
+  if (extraFields.assignedTo !== undefined) updateData.assigned_to = extraFields.assignedTo;
+  if (extraFields.paymentStatus !== undefined) updateData.payment_status = extraFields.paymentStatus;
+  if (extraFields.reelsReadyUrl !== undefined) updateData.reels_ready_url = extraFields.reelsReadyUrl;
+  if (extraFields.notes !== undefined) updateData.notes = extraFields.notes;
+
+  const { error } = await supabase
+    .from('bookings')
+    .update(updateData)
+    .eq('id', id);
+
+  if (error) console.error('updateBookingStatus error:', error);
+  return getBookings();
+};
+
+export const findBookingByReference = async (reference, contactVerification = '') => {
+  const cleanRef = reference.trim().toUpperCase();
+
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('*')
+    .eq('booking_reference', cleanRef)
+    .single();
+
+  if (error || !data) return null;
+
+  // Optional contact verification
+  if (contactVerification && contactVerification.trim()) {
+    const cleanContact = contactVerification.trim().toLowerCase().replace(/\s+/g, '');
+    const bEmail = (data.email || '').toLowerCase().trim();
+    const bPhone = (data.phone || '').replace(/\s+/g, '');
+    if (!bEmail.includes(cleanContact) && !bPhone.includes(cleanContact)) {
+      return null;
     }
-    return e;
-  });
-  saveEnquiries(updated);
-  return updated;
+  }
+
+  return mapBookingFromDb(data);
 };
 
-// ADMIN AUTH
+export const deleteBooking = async (id) => {
+  const { error } = await supabase.from('bookings').delete().eq('id', id);
+  if (error) console.error('deleteBooking error:', error);
+};
+
+// ============================================================
+// SLOT AVAILABILITY
+// ============================================================
+export const isSlotBookedOrBlocked = async (dateStr, slotTime) => {
+  if (!dateStr || !slotTime) return false;
+
+  // Check bookings
+  const { data: bookingData } = await supabase
+    .from('bookings')
+    .select('id')
+    .eq('date', dateStr)
+    .eq('start_time', slotTime)
+    .neq('status', 'Cancelled')
+    .limit(1);
+
+  if (bookingData && bookingData.length > 0) return true;
+
+  // Check blocked slots
+  const { data: blockedData } = await supabase
+    .from('blocked_slots')
+    .select('id')
+    .eq('date', dateStr)
+    .eq('slot', slotTime)
+    .limit(1);
+
+  return !!(blockedData && blockedData.length > 0);
+};
+
+// Get all booked/blocked slots for a given date (used for realtime UI)
+export const getBookedSlotsForDate = async (dateStr) => {
+  if (!dateStr) return [];
+
+  const bookedSlots = new Set();
+
+  const { data: bookingData } = await supabase
+    .from('bookings')
+    .select('start_time')
+    .eq('date', dateStr)
+    .neq('status', 'Cancelled');
+
+  (bookingData || []).forEach(b => bookedSlots.add(b.start_time));
+
+  const { data: blockedData } = await supabase
+    .from('blocked_slots')
+    .select('slot')
+    .eq('date', dateStr);
+
+  (blockedData || []).forEach(b => bookedSlots.add(b.slot));
+
+  return Array.from(bookedSlots);
+};
+
+export const toggleSlotBlock = async (dateStr, slotTime, reason = 'Admin Blocked') => {
+  // Check if already blocked
+  const { data: existing } = await supabase
+    .from('blocked_slots')
+    .select('id')
+    .eq('date', dateStr)
+    .eq('slot', slotTime)
+    .limit(1);
+
+  if (existing && existing.length > 0) {
+    await supabase.from('blocked_slots').delete().eq('date', dateStr).eq('slot', slotTime);
+  } else {
+    await supabase.from('blocked_slots').insert({ date: dateStr, slot: slotTime, reason });
+  }
+};
+
+// ============================================================
+// PROMOTIONS
+// ============================================================
+export const getPromotions = async () => {
+  const { data, error } = await supabase
+    .from('promotions')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('getPromotions error:', error);
+    return [];
+  }
+  return (data || []).map(mapPromotionFromDb);
+};
+
+export const addPromotion = async (promo) => {
+  const row = {
+    id: 'promo-' + Date.now(),
+    title: promo.title,
+    category: promo.category,
+    discount: promo.discount,
+    original_price: promo.originalPrice,
+    final_price: promo.finalPrice,
+    target_package_id: promo.targetPackageId,
+    valid_until: promo.validUntil,
+    description: promo.description,
+    terms: promo.terms,
+    badge: promo.badge,
+    active: promo.active !== false
+  };
+  const { error } = await supabase.from('promotions').insert(row);
+  if (error) console.error('addPromotion error:', error);
+  return getPromotions();
+};
+
+export const updatePromotion = async (promo) => {
+  const { error } = await supabase
+    .from('promotions')
+    .update(mapPromotionToDb(promo))
+    .eq('id', promo.id);
+  if (error) console.error('updatePromotion error:', error);
+  return getPromotions();
+};
+
+export const deletePromotion = async (id) => {
+  const { error } = await supabase.from('promotions').delete().eq('id', id);
+  if (error) console.error('deletePromotion error:', error);
+};
+
+// ============================================================
+// ENQUIRIES
+// ============================================================
+export const getEnquiries = async () => {
+  const { data, error } = await supabase
+    .from('enquiries')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('getEnquiries error:', error);
+    return [];
+  }
+  return (data || []).map(mapEnquiryFromDb);
+};
+
+export const createEnquiry = async (enquiryData) => {
+  const row = {
+    id: 'enq-' + Date.now(),
+    name: enquiryData.name,
+    phone: enquiryData.phone,
+    email: enquiryData.email,
+    event_type: enquiryData.eventType,
+    event_date: enquiryData.eventDate || null,
+    location: enquiryData.location,
+    expected_coverage: enquiryData.expectedCoverage,
+    required_reels: enquiryData.requiredReels,
+    required_portraits: enquiryData.requiredPortraits,
+    budget_range: enquiryData.budgetRange,
+    special_requirements: enquiryData.specialRequirements,
+    status: 'New',
+    notes: 'Inquiry received via website.'
+  };
+
+  const { data, error } = await supabase
+    .from('enquiries')
+    .insert(row)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('createEnquiry error:', error);
+    throw error;
+  }
+  return mapEnquiryFromDb(data);
+};
+
+export const updateEnquiryStatus = async (id, status, notes) => {
+  const updateData = {};
+  if (status) updateData.status = status;
+  if (notes !== undefined) updateData.notes = notes;
+
+  const { error } = await supabase
+    .from('enquiries')
+    .update(updateData)
+    .eq('id', id);
+
+  if (error) console.error('updateEnquiryStatus error:', error);
+  return getEnquiries();
+};
+
+// ============================================================
+// ADMIN AUTH (session-based, unchanged)
+// ============================================================
+const ADMIN_AUTH_KEY = 'vs_admin_auth_v1';
+
 export const getAdminAuth = () => {
   try {
-    const auth = sessionStorage.getItem(STORAGE_KEYS.ADMIN_AUTH);
+    const auth = sessionStorage.getItem(ADMIN_AUTH_KEY);
     return auth ? JSON.parse(auth) : null;
   } catch {
     return null;
@@ -245,7 +357,7 @@ export const getAdminAuth = () => {
 
 export const setAdminAuth = (user) => {
   try {
-    sessionStorage.setItem(STORAGE_KEYS.ADMIN_AUTH, JSON.stringify(user));
+    sessionStorage.setItem(ADMIN_AUTH_KEY, JSON.stringify(user));
   } catch (e) {
     console.error(e);
   }
@@ -253,8 +365,172 @@ export const setAdminAuth = (user) => {
 
 export const clearAdminAuth = () => {
   try {
-    sessionStorage.removeItem(STORAGE_KEYS.ADMIN_AUTH);
+    sessionStorage.removeItem(ADMIN_AUTH_KEY);
   } catch (e) {
     console.error(e);
   }
 };
+
+// ============================================================
+// REALTIME SUBSCRIPTIONS
+// ============================================================
+export const subscribeToSlotChanges = (callback) => {
+  const channel = supabase
+    .channel('slot-changes')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, callback)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'blocked_slots' }, callback)
+    .subscribe();
+
+  return () => supabase.removeChannel(channel);
+};
+
+export const subscribeToBookings = (callback) => {
+  const channel = supabase
+    .channel('bookings-admin-realtime')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, callback)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'blocked_slots' }, callback)
+    .subscribe();
+
+  return () => supabase.removeChannel(channel);
+};
+
+// ============================================================
+// DB → UI MAPPERS (snake_case → camelCase)
+// ============================================================
+function mapPackageFromDb(row) {
+  return {
+    id: row.id,
+    category: row.category,
+    categoryName: row.category_name,
+    name: row.name,
+    price: row.price,
+    isCustom: row.is_custom,
+    badge: row.badge,
+    featured: row.featured,
+    coverageHours: row.coverage_hours,
+    reelsCount: row.reels_count,
+    portraitsCount: row.portraits_count,
+    description: row.description,
+    includes: row.includes || [],
+    extraAddons: row.extra_addons || [],
+    cta: row.cta
+  };
+}
+
+function mapPackageToDb(pkg) {
+  return {
+    id: pkg.id,
+    category: pkg.category,
+    category_name: pkg.categoryName,
+    name: pkg.name,
+    price: pkg.price,
+    is_custom: pkg.isCustom,
+    badge: pkg.badge,
+    featured: pkg.featured,
+    coverage_hours: pkg.coverageHours?.toString(),
+    reels_count: pkg.reelsCount?.toString(),
+    portraits_count: pkg.portraitsCount?.toString(),
+    description: pkg.description,
+    includes: pkg.includes || [],
+    extra_addons: pkg.extraAddons || [],
+    cta: pkg.cta
+  };
+}
+
+function mapBookingFromDb(row) {
+  return {
+    id: row.id,
+    bookingReference: row.booking_reference,
+    customerName: row.customer_name,
+    phone: row.phone,
+    email: row.email,
+    packageId: row.package_id,
+    packageName: row.package_name,
+    eventType: row.event_type,
+    date: row.date,
+    startTime: row.start_time,
+    duration: row.duration,
+    location: row.location,
+    peopleCount: row.people_count,
+    instagram: row.instagram,
+    requirements: row.requirements,
+    referenceLinks: row.reference_links,
+    addons: row.addons || [],
+    appliedPromotion: row.applied_promotion,
+    totalAmount: row.total_amount,
+    status: row.status,
+    paymentStatus: row.payment_status,
+    assignedTo: row.assigned_to,
+    reelsReadyUrl: row.reels_ready_url,
+    notes: row.notes,
+    createdAt: row.created_at
+  };
+}
+
+function mapEnquiryFromDb(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    phone: row.phone,
+    email: row.email,
+    eventType: row.event_type,
+    eventDate: row.event_date,
+    location: row.location,
+    expectedCoverage: row.expected_coverage,
+    requiredReels: row.required_reels,
+    requiredPortraits: row.required_portraits,
+    budgetRange: row.budget_range,
+    specialRequirements: row.special_requirements,
+    status: row.status,
+    notes: row.notes,
+    createdAt: row.created_at
+  };
+}
+
+function mapPromotionFromDb(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    category: row.category,
+    discount: row.discount,
+    originalPrice: row.original_price,
+    finalPrice: row.final_price,
+    targetPackageId: row.target_package_id,
+    validUntil: row.valid_until,
+    description: row.description,
+    terms: row.terms,
+    badge: row.badge,
+    active: row.active
+  };
+}
+
+function mapPromotionToDb(promo) {
+  return {
+    title: promo.title,
+    category: promo.category,
+    discount: promo.discount,
+    original_price: promo.originalPrice,
+    final_price: promo.finalPrice,
+    target_package_id: promo.targetPackageId,
+    valid_until: promo.validUntil,
+    description: promo.description,
+    terms: promo.terms,
+    badge: promo.badge,
+    active: promo.active
+  };
+}
+
+// Legacy no-op for getBlockedSlots (still exported for compatibility)
+export const getBlockedSlots = async () => {
+  const { data } = await supabase.from('blocked_slots').select('*');
+  return (data || []).map(r => ({ date: r.date, slot: r.slot, reason: r.reason }));
+};
+
+// Portfolio — served from static initial data (no DB table needed)
+export const getPortfolio = () => INITIAL_PORTFOLIO;
+export const addPortfolioItem = (item) => ({ ...item, id: 'proj-' + Date.now() });
+export const deletePortfolioItem = (id) => id;
+export const savePortfolio = () => {};
+
+// Events — served from static initial data (no DB table needed)
+export const getEvents = () => INITIAL_EVENTS;

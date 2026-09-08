@@ -27,18 +27,22 @@ export function CustomEnquiryModal() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    createEnquiry({
-      ...formData,
-      type: customEnquiryType
-    });
+    try {
+      await createEnquiry({
+        ...formData,
+        type: customEnquiryType
+      });
+    } catch (err) {
+      console.error('Enquiry submit error:', err);
+    }
     setSubmitted(true);
   };
 
   const handleWhatsAppHandoff = () => {
     const text = `Hello Vela Shootz! I just submitted a custom package enquiry:\nName: ${formData.name}\nType: ${formData.eventType}\nDate: ${formData.eventDate || 'TBD'}\nLocation: ${formData.location || 'Local'}\nBudget: ${formData.budgetRange}`;
-    window.open(`https://wa.me/919876543210?text=${encodeURIComponent(text)}`, '_blank');
+    window.open(`https://wa.me/917095891554?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   const handleClose = () => {

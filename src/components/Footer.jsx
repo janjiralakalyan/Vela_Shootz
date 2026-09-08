@@ -49,7 +49,7 @@ export function Footer({ navigateTo }) {
   };
 
   const handleWhatsApp = () => {
-    window.open('https://wa.me/919876543210?text=' + encodeURIComponent('Hello Vela Shootz! I would like to know more about booking a shoot.'), '_blank');
+    window.open('https://wa.me/917095891554?text=' + encodeURIComponent('Hello Vela Shootz! I would like to know more about booking a shoot.'), '_blank');
   };
 
   return (

@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getPackages } from '../data/storage';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { getPackages, getBookedSlotsForDate, subscribeToSlotChanges } from '../data/storage';
 
 const BookingContext = createContext();
 
 export function BookingProvider({ children }) {
-  const [packages, setPackages] = useState(getPackages());
+  const [packages, setPackages] = useState([]);
+  const [packagesLoading, setPackagesLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('on-spot');
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [selectedAddons, setSelectedAddons] = useState([]);
@@ -28,28 +29,71 @@ export function BookingProvider({ children }) {
     notes: ''
   });
 
+  // Realtime slot availability state
+  const [bookedSlotsForDate, setBookedSlotsForDate] = useState([]);
+  const [slotsLoading, setSlotsLoading] = useState(false);
+
   // Modal control for custom package enquiry
   const [customEnquiryModalOpen, setCustomEnquiryModalOpen] = useState(false);
   const [customEnquiryType, setCustomEnquiryType] = useState('Family Events');
 
-  const refreshPackages = () => {
-    setPackages(getPackages());
+  // Load packages from Supabase on mount
+  useEffect(() => {
+    let isMounted = true;
+    setPackagesLoading(true);
+    getPackages().then(pkgs => {
+      if (isMounted) {
+        setPackages(pkgs);
+        setPackagesLoading(false);
+      }
+    });
+    return () => { isMounted = false; };
+  }, []);
+
+  // Fetch booked slots whenever date changes
+  const refreshSlotsForDate = useCallback(async (dateStr) => {
+    if (!dateStr) {
+      setBookedSlotsForDate([]);
+      return;
+    }
+    setSlotsLoading(true);
+    const booked = await getBookedSlotsForDate(dateStr);
+    setBookedSlotsForDate(booked);
+    setSlotsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    refreshSlotsForDate(selectedDate);
+  }, [selectedDate, refreshSlotsForDate]);
+
+  // Realtime subscription — refresh slot availability on any booking/blocked_slot change
+  useEffect(() => {
+    const unsubscribe = subscribeToSlotChanges(() => {
+      if (selectedDate) {
+        refreshSlotsForDate(selectedDate);
+      }
+    });
+    return () => {
+      if (typeof unsubscribe === 'function') unsubscribe();
+    };
+  }, [selectedDate, refreshSlotsForDate]);
+
+  const refreshPackages = async () => {
+    const pkgs = await getPackages();
+    setPackages(pkgs);
   };
 
   const selectPackage = (pkg) => {
     setSelectedPackage(pkg);
-    setSelectedCategory(pkg.category);
+    if (pkg) setSelectedCategory(pkg.category);
     setSelectedAddons([]);
   };
 
   const toggleAddon = (addon) => {
     setSelectedAddons(prev => {
       const exists = prev.find(a => a.id === addon.id);
-      if (exists) {
-        return prev.filter(a => a.id !== addon.id);
-      } else {
-        return [...prev, addon];
-      }
+      if (exists) return prev.filter(a => a.id !== addon.id);
+      return [...prev, addon];
     });
   };
 
@@ -67,9 +111,7 @@ export function BookingProvider({ children }) {
   const calculateTotal = () => {
     if (!selectedPackage || selectedPackage.isCustom) return 0;
     let total = selectedPackage.price;
-    selectedAddons.forEach(a => {
-      total += a.price;
-    });
+    selectedAddons.forEach(a => { total += a.price; });
     if (appliedPromotion && appliedPromotion.targetPackageId === selectedPackage.id) {
       if (appliedPromotion.originalPrice && appliedPromotion.finalPrice) {
         const discount = appliedPromotion.originalPrice - appliedPromotion.finalPrice;
@@ -90,6 +132,7 @@ export function BookingProvider({ children }) {
     setSelectedDate('');
     setSelectedTime('');
     setAppliedPromotion(null);
+    setBookedSlotsForDate([]);
     setEventDetails({
       customerName: '',
       phone: '',
@@ -112,6 +155,7 @@ export function BookingProvider({ children }) {
     <BookingContext.Provider
       value={{
         packages,
+        packagesLoading,
         refreshPackages,
         selectedCategory,
         setSelectedCategory,
@@ -134,7 +178,11 @@ export function BookingProvider({ children }) {
         customEnquiryModalOpen,
         setCustomEnquiryModalOpen,
         customEnquiryType,
-        openCustomEnquiry
+        openCustomEnquiry,
+        // Slot availability
+        bookedSlotsForDate,
+        slotsLoading,
+        refreshSlotsForDate
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   LayoutDashboard,
   CalendarCheck,
@@ -20,42 +20,117 @@ import {
   Mail,
   AlertCircle,
   Save,
-  X
+  X,
+  Loader2,
+  RefreshCw,
+  MessageCircle,
+  Bell,
+  ExternalLink
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useBooking } from '../../context/BookingContext';
 import {
+  getCallMeBotApiKey,
+  setCallMeBotApiKey,
+  sendTestWhatsAppAlert,
+  ADMIN_PHONE
+} from '../../services/whatsappAlert';
+import {
   getBookings,
-  saveBookings,
   updateBookingStatus,
   getEnquiries,
   updateEnquiryStatus,
   getPackages,
-  savePackages,
   updatePackage,
-  getPortfolio,
-  addPortfolioItem,
-  deletePortfolioItem,
   getPromotions,
   addPromotion,
   deletePromotion,
-  getEvents,
   getBlockedSlots,
-  toggleSlotBlock
+  toggleSlotBlock,
+  subscribeToBookings
 } from '../../data/storage';
-import { TIME_SLOTS } from '../../data/initialData';
+import { TIME_SLOTS, INITIAL_PORTFOLIO, INITIAL_EVENTS } from '../../data/initialData';
 
 export function AdminDashboard({ navigateTo }) {
   const { adminUser, logout } = useAuth();
   const { refreshPackages } = useBooking();
 
-  const [activeTab, setActiveTab] = useState('overview'); // overview, bookings, calendar, pricing, crm, portfolio, promotions
-  const [bookingsList, setBookingsList] = useState(getBookings());
-  const [enquiriesList, setEnquiriesList] = useState(getEnquiries());
-  const [packagesList, setPackagesList] = useState(getPackages());
-  const [portfolioList, setPortfolioList] = useState(getPortfolio());
-  const [promotionsList, setPromotionsList] = useState(getPromotions());
-  const [blockedSlotsList, setBlockedSlotsList] = useState(getBlockedSlots());
+  const [activeTab, setActiveTab] = useState('overview');
+  const [bookingsList, setBookingsList] = useState([]);
+  const [enquiriesList, setEnquiriesList] = useState([]);
+  const [packagesList, setPackagesList] = useState([]);
+  const [portfolioList, setPortfolioList] = useState(INITIAL_PORTFOLIO);
+  const [promotionsList, setPromotionsList] = useState([]);
+  const [blockedSlotsList, setBlockedSlotsList] = useState([]);
+  const [adminLoading, setAdminLoading] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [waApiKey, setWaApiKey] = useState(() => getCallMeBotApiKey());
+  const [waTestLoading, setWaTestLoading] = useState(false);
+  const [waStatusMsg, setWaStatusMsg] = useState('');
+
+  // Load all data from Supabase on mount
+  const loadAllData = useCallback(async () => {
+    setAdminLoading(true);
+    try {
+      const [bookings, enquiries, packages, promotions, blocked] = await Promise.all([
+        getBookings(),
+        getEnquiries(),
+        getPackages(),
+        getPromotions(),
+        getBlockedSlots()
+      ]);
+      setBookingsList(bookings);
+      setEnquiriesList(enquiries);
+      setPackagesList(packages);
+      setPromotionsList(promotions);
+      setBlockedSlotsList(blocked);
+    } catch (err) {
+      console.error('AdminDashboard load error:', err);
+    } finally {
+      setAdminLoading(false);
+    }
+  }, []);
+
+  // Manual sync function with visual feedback
+  const handleManualSync = async () => {
+    setIsSyncing(true);
+    try {
+      const [bookings, enquiries, packages, promotions, blocked] = await Promise.all([
+        getBookings(),
+        getEnquiries(),
+        getPackages(),
+        getPromotions(),
+        getBlockedSlots()
+      ]);
+      setBookingsList(bookings);
+      setEnquiriesList(enquiries);
+      setPackagesList(packages);
+      setPromotionsList(promotions);
+      setBlockedSlotsList(blocked);
+    } catch (err) {
+      console.error('Sync error:', err);
+    } finally {
+      setTimeout(() => setIsSyncing(false), 500);
+    }
+  };
+
+  useEffect(() => {
+    loadAllData();
+    // Realtime: automatically refresh bookings & blocked slots on any change
+    const unsubscribe = subscribeToBookings(async () => {
+      try {
+        const [bookings, blocked] = await Promise.all([
+          getBookings(),
+          getBlockedSlots()
+        ]);
+        setBookingsList(bookings);
+        setBlockedSlotsList(blocked);
+      } catch (err) {
+        console.error('Realtime sync error:', err);
+      }
+    });
+    return () => { if (typeof unsubscribe === 'function') unsubscribe(); };
+  }, [loadAllData]);
 
   // Editing state for pricing
   const [editingPkg, setEditingPkg] = useState(null);
@@ -63,51 +138,83 @@ export function AdminDashboard({ navigateTo }) {
   // Calendar slot blocker date
   const [calendarDate, setCalendarDate] = useState(new Date().toISOString().split('T')[0]);
 
+  // Free WhatsApp Alert Handlers
+  const handleSaveWaKey = (key) => {
+    setCallMeBotApiKey(key);
+    setWaApiKey(key);
+    setWaStatusMsg('Key saved! Any new client booking will trigger an instant WhatsApp alert to your phone.');
+    setTimeout(() => setWaStatusMsg(''), 4000);
+  };
+
+  const handleTestWaAlert = async () => {
+    if (!waApiKey) {
+      setWaStatusMsg('Please enter or get your free CallMeBot API key first.');
+      return;
+    }
+    setWaTestLoading(true);
+    setWaStatusMsg('');
+    try {
+      setCallMeBotApiKey(waApiKey);
+      await sendTestWhatsAppAlert(waApiKey);
+      setWaStatusMsg('Test alert dispatched to +91 70958 91554! Check your WhatsApp.');
+    } catch (err) {
+      setWaStatusMsg('Failed to send test alert: ' + (err.message || 'Unknown error'));
+    } finally {
+      setWaTestLoading(false);
+    }
+  };
+
   // Handle Logout
   const handleLogout = () => {
     logout();
     navigateTo('home');
   };
 
-  // Status changer for bookings
-  const handleStatusChange = (bookingId, newStatus) => {
-    const updated = updateBookingStatus(bookingId, newStatus);
-    setBookingsList([...updated]);
+  // Status changer for bookings — async
+  const handleStatusChange = async (bookingId, newStatus) => {
+    await updateBookingStatus(bookingId, newStatus);
+    const updated = await getBookings();
+    setBookingsList(updated);
   };
 
-  // Team assign for bookings
-  const handleTeamAssign = (bookingId, teamName) => {
-    const updated = updateBookingStatus(bookingId, undefined, { assignedTo: teamName });
-    setBookingsList([...updated]);
+  // Team assign for bookings — async
+  const handleTeamAssign = async (bookingId, teamName) => {
+    await updateBookingStatus(bookingId, undefined, { assignedTo: teamName });
+    const updated = await getBookings();
+    setBookingsList(updated);
   };
 
-  // Payment status changer
-  const handlePaymentChange = (bookingId, newPaymentStatus) => {
-    const updated = updateBookingStatus(bookingId, undefined, { paymentStatus: newPaymentStatus });
-    setBookingsList([...updated]);
+  // Payment status changer — async
+  const handlePaymentChange = async (bookingId, newPaymentStatus) => {
+    await updateBookingStatus(bookingId, undefined, { paymentStatus: newPaymentStatus });
+    const updated = await getBookings();
+    setBookingsList(updated);
   };
 
-  // Package edit save
-  const handleSavePackage = (e) => {
+  // Package edit save — async
+  const handleSavePackage = async (e) => {
     e.preventDefault();
     if (!editingPkg) return;
-    const updated = updatePackage(editingPkg);
-    setPackagesList([...updated]);
+    await updatePackage(editingPkg);
+    const updated = await getPackages();
+    setPackagesList(updated);
     refreshPackages();
     setEditingPkg(null);
     alert('Package updated successfully! Live website and booking wizard updated.');
   };
 
-  // Toggle slot block
-  const handleSlotToggle = (slot) => {
-    const updated = toggleSlotBlock(calendarDate, slot, 'Admin Manual Block');
-    setBlockedSlotsList([...updated]);
+  // Toggle slot block — async
+  const handleSlotToggle = async (slot) => {
+    await toggleSlotBlock(calendarDate, slot, 'Admin Manual Block');
+    const blocked = await getBlockedSlots();
+    setBlockedSlotsList(blocked);
   };
 
-  // CRM status change
-  const handleCrmStatusChange = (enqId, status) => {
-    const updated = updateEnquiryStatus(enqId, status);
-    setEnquiriesList([...updated]);
+  // CRM status change — async
+  const handleCrmStatusChange = async (enqId, status) => {
+    await updateEnquiryStatus(enqId, status);
+    const updated = await getEnquiries();
+    setEnquiriesList(updated);
   };
 
   // KPI Calculations
@@ -116,6 +223,17 @@ export function AdminDashboard({ navigateTo }) {
     .reduce((sum, b) => sum + (b.totalAmount || 0), 0);
   const confirmedCount = bookingsList.filter(b => b.status !== 'Cancelled').length;
   const newEnquiriesCount = enquiriesList.filter(e => e.status === 'New').length;
+
+  // Loading state gate
+  if (adminLoading) {
+    return (
+      <div style={{ minHeight: '60vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+        <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: 'var(--gold-primary)' }} />
+        <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>Loading admin data from Supabase…</p>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: '90vh', padding: '1.5rem 0 5rem 0' }}>
@@ -145,6 +263,27 @@ export function AdminDashboard({ navigateTo }) {
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+            <button
+              onClick={handleManualSync}
+              disabled={isSyncing}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                background: 'rgba(229, 173, 54, 0.12)',
+                color: 'var(--gold-primary)',
+                border: '1px solid var(--gold-border)',
+                borderRadius: 'var(--radius-full)',
+                padding: '0.6rem 1.1rem',
+                fontSize: '0.82rem',
+                fontWeight: '700',
+                cursor: isSyncing ? 'not-allowed' : 'pointer'
+              }}
+              title="Refresh live data from Supabase"
+            >
+              <RefreshCw size={13} style={{ animation: isSyncing ? 'spin 0.8s linear infinite' : 'none' }} />
+              <span>{isSyncing ? 'Syncing...' : 'Sync Live'}</span>
+            </button>
             <button
               onClick={() => navigateTo('home')}
               className="btn-secondary"
@@ -272,6 +411,149 @@ export function AdminDashboard({ navigateTo }) {
               </div>
             </div>
 
+            {/* FREE WHATSAPP AUTOMATION CONTROLLER */}
+            <div
+              className="glass-card"
+              style={{
+                padding: '2rem',
+                border: '1px solid var(--gold-border)',
+                marginBottom: '2.5rem',
+                background: 'linear-gradient(135deg, rgba(34, 0, 11, 0.8) 0%, rgba(22, 101, 52, 0.15) 100%)'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.2rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+                  <div style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '50%',
+                    background: 'rgba(37, 211, 102, 0.18)',
+                    color: '#25D366',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <Bell size={22} />
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: '1.25rem', color: '#FFF', margin: 0 }}>
+                      Instant WhatsApp Alerts to Admin Phone
+                    </h3>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                      Sends automated booking notifications to <span style={{ color: '#4ADE80', fontWeight: '700' }}>+91 70958 91554</span> with 100% free lifetime gateway.
+                    </div>
+                  </div>
+                </div>
+
+                <span style={{
+                  padding: '0.35rem 0.8rem',
+                  borderRadius: 'var(--radius-full)',
+                  fontSize: '0.78rem',
+                  fontWeight: '700',
+                  background: waApiKey ? 'rgba(37, 211, 102, 0.15)' : 'rgba(229, 173, 54, 0.15)',
+                  color: waApiKey ? '#4ADE80' : 'var(--gold-primary)',
+                  border: `1px solid ${waApiKey ? 'rgba(37, 211, 102, 0.3)' : 'var(--gold-border)'}`
+                }}>
+                  {waApiKey ? '● AUTOMATION ACTIVE' : '○ SETUP NEEDED (30 SECONDS)'}
+                </span>
+              </div>
+
+              {/* Instructions and Input */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', alignItems: 'center' }}>
+                <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', lineHeight: '1.6' }}>
+                  <div style={{ fontWeight: '700', color: 'var(--text-gold)', marginBottom: '0.4rem' }}>HOW TO ACTIVATE (100% FREE):</div>
+                  <div>1. Click the button below to message CallMeBot on WhatsApp.</div>
+                  <div>2. Send: <code style={{ color: 'var(--gold-bright)', background: 'rgba(0,0,0,0.4)', padding: '0.1rem 0.4rem', borderRadius: '4px' }}>I allow callmebot to send me messages</code></div>
+                  <div>3. CallMeBot replies with your free API Key.</div>
+                  <div>4. Paste the API key here and click Save & Test!</div>
+
+                  <a
+                    href="https://wa.me/34644444964?text=I+allow+callmebot+to+send+me+messages"
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                      marginTop: '0.8rem',
+                      background: '#25D366',
+                      color: '#000',
+                      padding: '0.5rem 1rem',
+                      borderRadius: 'var(--radius-sm)',
+                      fontWeight: '800',
+                      fontSize: '0.8rem'
+                    }}
+                  >
+                    <MessageCircle size={14} /> 1. Get Free API Key on WhatsApp <ExternalLink size={12} />
+                  </a>
+                </div>
+
+                <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1.2rem', borderRadius: 'var(--radius-md)', border: '1px solid rgba(229, 173, 54, 0.15)' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', color: 'var(--text-gold)', marginBottom: '0.5rem' }}>
+                    YOUR CALLMEBOT API KEY
+                  </label>
+                  <div style={{ display: 'flex', gap: '0.6rem', marginBottom: '0.8rem' }}>
+                    <input
+                      type="text"
+                      placeholder="e.g. 1234567"
+                      value={waApiKey}
+                      onChange={(e) => setWaApiKey(e.target.value)}
+                      style={{
+                        flex: 1,
+                        background: 'rgba(34, 0, 11, 0.9)',
+                        border: '1px solid var(--gold-border)',
+                        color: '#FFF',
+                        padding: '0.6rem 0.8rem',
+                        borderRadius: 'var(--radius-sm)',
+                        fontSize: '0.88rem',
+                        fontFamily: 'var(--font-mono)'
+                      }}
+                    />
+                    <button
+                      onClick={() => handleSaveWaKey(waApiKey)}
+                      className="btn-secondary"
+                      style={{ padding: '0.6rem 1rem', fontSize: '0.82rem', whiteSpace: 'nowrap' }}
+                    >
+                      Save Key
+                    </button>
+                  </div>
+
+                  <button
+                    onClick={handleTestWaAlert}
+                    disabled={waTestLoading}
+                    style={{
+                      width: '100%',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      background: 'var(--grad-gold)',
+                      color: '#1A0008',
+                      fontWeight: '800',
+                      padding: '0.65rem 1rem',
+                      borderRadius: 'var(--radius-sm)',
+                      fontSize: '0.82rem',
+                      cursor: waTestLoading ? 'not-allowed' : 'pointer'
+                    }}
+                  >
+                    {waTestLoading ? <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <Bell size={14} />}
+                    <span>{waTestLoading ? 'Sending Test...' : 'Send Test Alert to +91 70958 91554'}</span>
+                  </button>
+
+                  {waStatusMsg && (
+                    <div style={{
+                      marginTop: '0.8rem',
+                      fontSize: '0.78rem',
+                      color: waStatusMsg.includes('dispatched') || waStatusMsg.includes('saved') ? '#4ADE80' : '#FF6B6B',
+                      fontWeight: '600'
+                    }}>
+                      {waStatusMsg}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
             {/* RECENT BOOKINGS SUMMARY */}
             <div className="glass-card" style={{ padding: '2rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.2rem' }}>
@@ -318,9 +600,26 @@ export function AdminDashboard({ navigateTo }) {
         {/* TAB 2: BOOKINGS MANAGEMENT (SECTION 32) */}
         {activeTab === 'bookings' && (
           <div className="glass-card" style={{ padding: '2rem' }}>
-            <h2 style={{ fontSize: '1.4rem', color: '#FFF', marginBottom: '1.5rem' }}>
-              Booking Management & Status Controller
-            </h2>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+                <h2 style={{ fontSize: '1.4rem', color: '#FFF', marginBottom: '0.2rem' }}>
+                  Booking Management & Status Controller
+                </h2>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.8rem' }}>
+                  <span style={{ color: '#4ADE80', fontWeight: '600' }}>● Supabase Realtime Active</span>
+                  <span style={{ color: 'var(--text-dim)' }}>• {bookingsList.length} Total Bookings</span>
+                </div>
+              </div>
+              <button
+                onClick={handleManualSync}
+                disabled={isSyncing}
+                className="btn-secondary"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.5rem 1rem', fontSize: '0.8rem', cursor: isSyncing ? 'not-allowed' : 'pointer' }}
+              >
+                <RefreshCw size={13} style={{ animation: isSyncing ? 'spin 0.8s linear infinite' : 'none' }} />
+                <span>{isSyncing ? 'Refreshing...' : 'Refresh Bookings'}</span>
+              </button>
+            </div>
 
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
@@ -346,6 +645,28 @@ export function AdminDashboard({ navigateTo }) {
                         <div style={{ fontWeight: '700', color: '#FFF' }}>{b.customerName}</div>
                         <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{b.phone}</div>
                         <div style={{ fontSize: '0.78rem', color: 'var(--text-dim)' }}>{b.email}</div>
+                        {b.phone && (
+                          <a
+                            href={`https://wa.me/${b.phone.replace(/\D/g, '')}?text=${encodeURIComponent(`Hello ${b.customerName}! Re: Vela Shootz Booking ${b.bookingReference} (${b.packageName}) on ${b.date} at ${b.startTime}.`)}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            style={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.3rem',
+                              marginTop: '0.35rem',
+                              fontSize: '0.74rem',
+                              color: '#25D366',
+                              fontWeight: '600',
+                              background: 'rgba(37, 211, 102, 0.1)',
+                              padding: '0.2rem 0.5rem',
+                              borderRadius: 'var(--radius-sm)',
+                              border: '1px solid rgba(37, 211, 102, 0.25)'
+                            }}
+                          >
+                            <MessageCircle size={11} /> WhatsApp
+                          </a>
+                        )}
                       </td>
 
                       <td style={{ padding: '1rem 0.8rem' }}>
