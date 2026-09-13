@@ -60,16 +60,25 @@ export const getBookings = async () => {
 };
 
 export const createBooking = async (bookingData) => {
-  // Generate unique booking reference via DB function
-  const { data: refData, error: refError } = await supabase
-    .rpc('generate_booking_reference');
-
-  if (refError) {
-    console.error('generate_booking_reference error:', refError);
-    throw refError;
+  // Generate unique booking reference via DB function with fallback
+  let bookingRef = null;
+  try {
+    const { data: refData, error: refError } = await supabase
+      .rpc('generate_booking_reference');
+    if (!refError && refData) {
+      bookingRef = refData;
+    } else if (refError) {
+      console.warn('generate_booking_reference RPC notice, using fallback reference:', refError);
+    }
+  } catch (rpcErr) {
+    console.warn('generate_booking_reference exception, using fallback reference:', rpcErr);
   }
 
-  const bookingRef = refData;
+  if (!bookingRef) {
+    const randNum = Math.floor(10000 + Math.random() * 90000);
+    bookingRef = `VS-${new Date().getFullYear()}-${randNum}`;
+  }
+
   const bookingId = 'b-' + Date.now();
 
   const newBooking = {
