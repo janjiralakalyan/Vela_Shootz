@@ -7,6 +7,7 @@ import { PricingSection } from '../components/PricingSection';
 import { PortfolioSection } from '../components/PortfolioSection';
 import { IPhonePhilosophy } from '../components/iPhonePhilosophy';
 import { WhyVelaShootz } from '../components/WhyVelaShootz';
+import { FoundersSection } from '../components/FoundersSection';
 import { TestimonialsSection } from '../components/TestimonialsSection';
 import { FaqSection } from '../components/FaqSection';
 import { FinalCta } from '../components/FinalCta';
@@ -37,6 +38,9 @@ export function HomePage({ navigateTo }) {
 
       {/* 12. Why Vela Shootz (6 Core Benefits) */}
       <WhyVelaShootz />
+
+      {/* 12b. Pillars Behind Vela Shootz (Founders Spotlight) */}
+      <FoundersSection />
 
       {/* 13. Testimonials */}
       <TestimonialsSection />

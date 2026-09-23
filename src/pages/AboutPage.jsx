@@ -1,6 +1,7 @@
 import React from 'react';
 import { IPhonePhilosophy } from '../components/iPhonePhilosophy';
 import { WhyVelaShootz } from '../components/WhyVelaShootz';
+import { FoundersSection } from '../components/FoundersSection';
 import { FinalCta } from '../components/FinalCta';
 import { Sparkles, Shield, Heart, Zap } from 'lucide-react';
 
@@ -107,6 +108,7 @@ export function AboutPage({ navigateTo }) {
 
       <IPhonePhilosophy />
       <WhyVelaShootz />
+      <FoundersSection />
       <FinalCta navigateTo={navigateTo} />
     </div>
   );
