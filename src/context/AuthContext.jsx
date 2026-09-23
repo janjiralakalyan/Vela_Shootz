@@ -8,7 +8,9 @@ export function AuthProvider({ children }) {
 
   const login = (email, password) => {
     // Standard secure credentials for Vela Shootz Administrator
-    if (email.trim().toLowerCase() === 'admin@velashootz.com' && password === 'vela2026') {
+    const ADMIN_USER = import.meta.env.VITE_ADMIN_USERNAME;
+    const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASSWORD;
+    if (email.trim().toLowerCase() === ADMIN_USER?.toLowerCase() && password === ADMIN_PASS) {
       const user = {
         name: 'Vela Admin',
         email: 'admin@velashootz.com',
@@ -19,7 +21,7 @@ export function AuthProvider({ children }) {
       setAdminUser(user);
       return { success: true };
     } else {
-      return { success: false, message: 'Invalid credentials. Use admin@velashootz.com / vela2026' };
+      return { success: false, message: 'Invalid credentials. Check environment variables.' };
     }
   };
 

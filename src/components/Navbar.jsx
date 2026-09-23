@@ -239,7 +239,15 @@ export function Navbar({ currentPage, navigateTo }) {
 
           {/* MOBILE MENU TOGGLE BUTTON */}
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            onClick={() => {
+              const newState = !mobileMenuOpen;
+              setMobileMenuOpen(newState);
+              if (newState) {
+                // Redirect to home when menu opens on mobile
+                navigateTo('home');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
             style={{
               display: 'none',
               alignItems: 'center',
@@ -329,45 +337,30 @@ export function Navbar({ currentPage, navigateTo }) {
 
       {/* MEDIA QUERY STYLES */}
       <style>{`
-        @media (min-width: 960px) {
-          .desktop-nav {
-            display: flex !important;
-          }
-          .mobile-menu-btn {
-            display: none !important;
-          }
-        }
-        @media (max-width: 959px) {
-          .desktop-nav {
-            display: none !important;
-          }
-          .mobile-menu-btn {
-            display: flex !important;
-          }
-          .track-status-btn {
-            display: none !important;
-          }
-        }
-        @media (max-width: 600px) {
-          .site-header {
-            top: 8px !important;
-            padding: 0 0.65rem !important;
-          }
-          .navbar-curved-container {
-            height: 56px !important;
-            border-radius: 999px !important;
-            padding: 0 0.65rem 0 0.85rem !important;
-          }
-          .book-shoot-btn {
-            padding: 0.42rem 0.85rem !important;
-            font-size: 0.74rem !important;
-          }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-8px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
+  @media (min-width: 768px) {
+    .desktop-nav { display: flex !important; }
+    .mobile-menu-btn { display: none !important; }
+  }
+  @media (max-width: 767px) {
+    .desktop-nav { display: none !important; }
+    .mobile-menu-btn { display: flex !important; }
+    .track-status-btn { display: none !important; }
+  }
+  @media (max-width: 480px) {
+    .site-header { top: 8px !important; padding: 0 0.5rem !important; }
+    .navbar-curved-container { height: 52px !important; padding: 0 0.5rem 0 0.7rem !important; }
+    .book-shoot-btn { padding: 0.38rem 0.7rem !important; font-size: 0.68rem !important; }
+  }
+  @media (max-width: 600px) {
+    .site-header { top: 8px !important; padding: 0 0.65rem !important; }
+    .navbar-curved-container { height: 56px !important; border-radius: 999px !important; padding: 0 0.65rem 0 0.85rem !important; }
+    .book-shoot-btn { padding: 0.42rem 0.85rem !important; font-size: 0.74rem !important; }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+`}</style>
     </header>
   );
 }

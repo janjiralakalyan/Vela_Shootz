@@ -21,7 +21,7 @@ import {
 import confetti from 'canvas-confetti';
 import { useBooking } from '../context/BookingContext';
 import { TIME_SLOTS } from '../data/initialData';
-import { createBooking } from '../data/storage';
+
 
 export function BookingWizardPage({ navigateTo }) {
   const {
@@ -155,27 +155,18 @@ export function BookingWizardPage({ navigateTo }) {
     setValidationError('');
     try {
       const totalAmount = calculateTotal();
-      const newBooking = await createBooking({
-        customerName: eventDetails.customerName,
-        phone: eventDetails.phone,
-        email: eventDetails.email,
-        packageId: selectedPackage.id,
-        packageName: selectedPackage.name,
-        eventType: eventDetails.eventType,
-        date: selectedDate,
-        startTime: selectedTime,
-        duration: `${selectedPackage.coverageHours} Hours`,
-        location: eventDetails.location,
-        peopleCount: eventDetails.peopleCount,
-        instagram: eventDetails.instagram,
-        requirements: eventDetails.requirements,
-        referenceLinks: references.moodboardUrl || references.referenceReelUrl || '',
-        addons: selectedAddons,
-        appliedPromotion: appliedPromotion ? appliedPromotion.title : null,
-        totalAmount
-      });
+    // Greeting object instead of persisting to the database
+    const greeting = {
+      bookingReference: 'GREET-001',
+      customerName: eventDetails.customerName,
+      packageName: selectedPackage?.name || '',
+      date: selectedDate,
+      startTime: selectedTime,
+      location: eventDetails.location,
+      totalAmount: calculateTotal(),
+    };
 
-      setConfirmedBooking(newBooking);
+      setConfirmedBooking(greeting);
       setCurrentStep(8);
 
       // Launch celebratory confetti

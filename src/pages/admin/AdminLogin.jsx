@@ -4,8 +4,8 @@ import { useAuth } from '../../context/AuthContext';
 
 export function AdminLogin({ onLoginSuccess, navigateTo }) {
   const { login } = useAuth();
-  const [email, setEmail] = useState('admin@velashootz.com');
-  const [password, setPassword] = useState('vela2026');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = (e) => {
@@ -145,7 +145,7 @@ export function AdminLogin({ onLoginSuccess, navigateTo }) {
         </form>
 
         <div style={{ marginTop: '1.5rem', fontSize: '0.78rem', color: 'var(--text-dim)' }}>
-          Default Demo Credentials: <strong style={{ color: 'var(--gold-primary)' }}>admin@velashootz.com</strong> / <strong style={{ color: 'var(--gold-primary)' }}>vela2026</strong>
+
         </div>
 
         <button
