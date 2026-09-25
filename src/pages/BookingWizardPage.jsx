@@ -21,6 +21,8 @@ import {
 import confetti from 'canvas-confetti';
 import { useBooking } from '../context/BookingContext';
 import { TIME_SLOTS } from '../data/initialData';
+import { createBooking } from '../data/storage';
+import { sendBookingConfirmationEmail } from '../services/emailService';
 
 
 export function BookingWizardPage({ navigateTo }) {
@@ -155,18 +157,32 @@ export function BookingWizardPage({ navigateTo }) {
     setValidationError('');
     try {
       const totalAmount = calculateTotal();
-    // Greeting object instead of persisting to the database
-    const greeting = {
-      bookingReference: 'GREET-001',
-      customerName: eventDetails.customerName,
-      packageName: selectedPackage?.name || '',
-      date: selectedDate,
-      startTime: selectedTime,
-      location: eventDetails.location,
-      totalAmount: calculateTotal(),
-    };
 
-      setConfirmedBooking(greeting);
+      // Persist booking to Supabase
+      const newBooking = await createBooking({
+        customerName: eventDetails.customerName,
+        phone: eventDetails.phone,
+        email: eventDetails.email,
+        packageId: selectedPackage?.id,
+        packageName: selectedPackage?.name || '',
+        eventType: eventDetails.eventType,
+        date: selectedDate,
+        startTime: selectedTime,
+        duration: eventDetails.duration,
+        location: eventDetails.location,
+        peopleCount: eventDetails.peopleCount,
+        instagram: eventDetails.instagram,
+        requirements: eventDetails.requirements,
+        referenceLinks: [
+          references.moodboardUrl,
+          references.referenceReelUrl
+        ].filter(Boolean),
+        addons: selectedAddons,
+        appliedPromotion: appliedPromotion || null,
+        totalAmount
+      });
+
+      setConfirmedBooking(newBooking);
       setCurrentStep(8);
 
       // Launch celebratory confetti
@@ -727,7 +743,7 @@ export function BookingWizardPage({ navigateTo }) {
               </p>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '700', color: 'var(--text-gold)', marginBottom: '0.4rem' }}>
                       FULL NAME *
@@ -752,17 +768,28 @@ export function BookingWizardPage({ navigateTo }) {
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '700', color: 'var(--text-gold)', marginBottom: '0.4rem' }}>
-                      EMAIL ADDRESS *
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.82rem', fontWeight: '700', color: 'var(--text-gold)', marginBottom: '0.4rem' }}>
+                      <Mail size={14} color="var(--gold-primary)" />
+                      <span>EMAIL ADDRESS (FOR BOOKING CONFIRMATION) *</span>
                     </label>
                     <input
                       type="email" name="email" required
                       value={eventDetails.email} onChange={handleInputChange}
-                      placeholder="name@domain.com"
-                      style={{ width: '100%', padding: '0.8rem 1rem', borderRadius: 'var(--radius-sm)', background: 'rgba(34, 0, 11, 0.8)', border: '1px solid var(--gold-border)', color: '#FFF', fontSize: '0.92rem' }}
+                      placeholder="name@example.com"
+                      style={{
+                        width: '100%', padding: '0.8rem 1rem',
+                        borderRadius: 'var(--radius-sm)',
+                        background: 'rgba(34, 0, 11, 0.9)',
+                        border: '1px solid var(--gold-primary)',
+                        boxShadow: '0 0 10px rgba(229, 173, 54, 0.15)',
+                        color: '#FFF', fontSize: '0.92rem'
+                      }}
                     />
+                    <div style={{ fontSize: '0.74rem', color: '#4ADE80', marginTop: '0.35rem' }}>
+                      ✓ Your slot confirmation & invoice will be instantly emailed to this address
+                    </div>
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: '700', color: 'var(--text-gold)', marginBottom: '0.4rem' }}>
@@ -900,6 +927,7 @@ export function BookingWizardPage({ navigateTo }) {
                     <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>Event Venue</div>
                     <div style={{ fontSize: '1.1rem', fontWeight: '700', color: '#FFF' }}>{eventDetails.location}</div>
                     <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>Contact: {eventDetails.phone}</div>
+                    <div style={{ fontSize: '0.82rem', color: 'var(--gold-bright)' }}>Email: {eventDetails.email}</div>
                   </div>
                 </div>
 
@@ -962,7 +990,7 @@ export function BookingWizardPage({ navigateTo }) {
               </h2>
               <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', maxWidth: '520px', margin: '0 auto 2rem auto', lineHeight: '1.6' }}>
                 We've locked your slot for <strong style={{ color: '#FFF' }}>{confirmedBooking.date} at {confirmedBooking.startTime}</strong>.
-                This booking is saved in real-time to our database.
+                A confirmation email has been sent to <strong style={{ color: '#E5AD36' }}>{confirmedBooking.email || eventDetails.email}</strong>.
               </p>
 
               {/* ====== "WE WILL CONTACT YOU SOON" ANIMATED LABEL ====== */}
@@ -1026,8 +1054,8 @@ export function BookingWizardPage({ navigateTo }) {
                   <div style={{ fontSize: '0.9rem', fontWeight: '700', color: '#FFF' }}>{confirmedBooking.customerName}</div>
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>Package</div>
-                  <div style={{ fontSize: '0.9rem', fontWeight: '700', color: '#FFF' }}>{confirmedBooking.packageName}</div>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>Email Confirmation Sent To</div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: '700', color: 'var(--gold-bright)' }}>{confirmedBooking.email || eventDetails.email}</div>
                 </div>
                 <div>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-dim)', textTransform: 'uppercase' }}>Location</div>

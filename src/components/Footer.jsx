@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MessageCircle, ArrowUpRight, Sparkles, MapPin, Mail, Phone } from 'lucide-react';
+import { MessageCircle, ArrowUpRight, Sparkles, MapPin, Mail, Phone, Shield } from 'lucide-react';
 import { InstagramIcon } from './Icons';
 
 export function Footer({ navigateTo }) {
@@ -211,6 +211,28 @@ export function Footer({ navigateTo }) {
                   style={{ color: 'var(--text-muted)', fontSize: '0.94rem' }}
                 >
                   Contact & Locations
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleLink('admin')}
+                  style={{
+                    color: 'var(--gold-primary)',
+                    fontSize: '0.86rem',
+                    fontWeight: '700',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    padding: '0.35rem 0.75rem',
+                    marginTop: '0.4rem',
+                    borderRadius: 'var(--radius-sm)',
+                    background: 'rgba(229, 173, 54, 0.08)',
+                    border: '1px solid var(--gold-border)'
+                  }}
+                  title="Studio Management & Booking Operations"
+                >
+                  <Shield size={13} color="var(--gold-primary)" />
+                  <span>Admin Studio Portal</span>
                 </button>
               </li>
             </ul>

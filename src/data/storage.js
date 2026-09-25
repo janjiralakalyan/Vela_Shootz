@@ -6,6 +6,7 @@
 import { supabase } from '../lib/supabase';
 import { INITIAL_PACKAGES, INITIAL_PORTFOLIO, INITIAL_EVENTS, TIME_SLOTS } from './initialData';
 import { sendAdminWhatsAppAlert } from '../services/whatsappAlert';
+import { sendBookingConfirmationEmail, sendEnquiryConfirmationEmail } from '../services/emailService';
 
 // Re-export TIME_SLOTS for consumers
 export { TIME_SLOTS };
@@ -122,6 +123,8 @@ export const createBooking = async (bookingData) => {
   const mappedBooking = mapBookingFromDb(data);
   // Trigger free automated WhatsApp alert to admin phone asynchronously
   sendAdminWhatsAppAlert(mappedBooking).catch(err => console.warn('[WhatsApp Alert Error]', err));
+  // Trigger transactional confirmation email to customer + admin alert asynchronously
+  sendBookingConfirmationEmail(mappedBooking).catch(err => console.warn('[Email Alert Error]', err));
 
   return mappedBooking;
 };
@@ -333,7 +336,12 @@ export const createEnquiry = async (enquiryData) => {
     console.error('createEnquiry error:', error);
     throw error;
   }
-  return mapEnquiryFromDb(data);
+  
+  const mappedEnquiry = mapEnquiryFromDb(data);
+  // Trigger email asynchronously
+  sendEnquiryConfirmationEmail(data).catch(err => console.warn('[Email Service Error]', err));
+
+  return mappedEnquiry;
 };
 
 export const updateEnquiryStatus = async (id, status, notes) => {

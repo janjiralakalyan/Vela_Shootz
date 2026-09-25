@@ -88,14 +88,16 @@ export function AdminLogin({ onLoginSuccess, navigateTo }) {
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', textAlign: 'left' }}>
           <div>
             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: '700', color: 'var(--text-gold)', marginBottom: '0.4rem' }}>
-              ADMIN EMAIL
+              ADMIN USERNAME / EMAIL
             </label>
             <div style={{ position: 'relative' }}>
               <input
-                type="email"
+                type="text"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter username or email"
+                autoComplete="username"
                 style={{
                   width: '100%',
                   padding: '0.8rem 1rem 0.8rem 2.6rem',
@@ -120,6 +122,8 @@ export function AdminLogin({ onLoginSuccess, navigateTo }) {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password"
+                autoComplete="current-password"
                 style={{
                   width: '100%',
                   padding: '0.8rem 1rem 0.8rem 2.6rem',
@@ -143,10 +147,6 @@ export function AdminLogin({ onLoginSuccess, navigateTo }) {
             <span>ENTER ADMIN DASHBOARD</span>
           </button>
         </form>
-
-        <div style={{ marginTop: '1.5rem', fontSize: '0.78rem', color: 'var(--text-dim)' }}>
-
-        </div>
 
         <button
           onClick={() => navigateTo('home')}
