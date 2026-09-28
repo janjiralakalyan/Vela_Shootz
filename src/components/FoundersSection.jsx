@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Sparkles, Award, Camera, CheckCircle2, Maximize2, X } from 'lucide-react';
+import foundersImg from '../assets/founders.jpg';
 
 export function FoundersSection() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const foundersSrc = foundersImg || '/assets/founders.jpg';
 
   return (
     <section
@@ -100,9 +102,14 @@ export function FoundersSection() {
           >
             {/* The Founders Photo */}
             <img
-              src="/assets/founders.jpg"
+              src={foundersSrc}
               alt="Pillars behind Vela Shootz: Yashwanth Batta (Founder) & Galeeb Mohammad (Co-Founder)"
-              loading="lazy"
+              loading="eager"
+              onError={(e) => {
+                if (e.currentTarget.src !== window.location.origin + '/assets/founders.jpg') {
+                  e.currentTarget.src = '/assets/founders.jpg';
+                }
+              }}
               style={{
                 width: '100%',
                 height: 'auto',
@@ -180,18 +187,38 @@ export function FoundersSection() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <div
                   style={{
-                    width: '38px',
-                    height: '38px',
-                    borderRadius: '10px',
-                    backgroundColor: 'rgba(229, 173, 54, 0.12)',
-                    border: '1px solid var(--gold-border)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--gold-primary)'
+                    position: 'relative',
+                    width: '46px',
+                    height: '46px',
+                    minWidth: '46px',
+                    borderRadius: '12px',
+                    border: '1.5px solid var(--gold-border)',
+                    boxShadow: '0 4px 14px rgba(0,0,0,0.5)',
+                    backgroundImage: `url(${foundersSrc})`,
+                    backgroundSize: '400% auto',
+                    backgroundPosition: '16% 23%',
+                    backgroundColor: 'rgba(229, 173, 54, 0.12)'
                   }}
+                  title="Yashwanth Batta - Founder"
                 >
-                  <Camera size={19} />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: '-3px',
+                      right: '-3px',
+                      width: '18px',
+                      height: '18px',
+                      borderRadius: '6px',
+                      backgroundColor: '#1C0008',
+                      border: '1px solid var(--gold-border)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'var(--gold-primary)'
+                    }}
+                  >
+                    <Camera size={10} />
+                  </div>
                 </div>
                 <div>
                   <h3 style={{ fontSize: '1.12rem', color: '#FFF', fontWeight: 800, margin: 0 }}>
@@ -250,18 +277,38 @@ export function FoundersSection() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <div
                   style={{
-                    width: '38px',
-                    height: '38px',
-                    borderRadius: '10px',
-                    backgroundColor: 'rgba(229, 173, 54, 0.12)',
-                    border: '1px solid var(--gold-border)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--gold-primary)'
+                    position: 'relative',
+                    width: '46px',
+                    height: '46px',
+                    minWidth: '46px',
+                    borderRadius: '12px',
+                    border: '1.5px solid var(--gold-border)',
+                    boxShadow: '0 4px 14px rgba(0,0,0,0.5)',
+                    backgroundImage: `url(${foundersSrc})`,
+                    backgroundSize: '400% auto',
+                    backgroundPosition: '85% 23%',
+                    backgroundColor: 'rgba(229, 173, 54, 0.12)'
                   }}
+                  title="Galeeb Mohammad - Co-Founder"
                 >
-                  <Award size={19} />
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: '-3px',
+                      right: '-3px',
+                      width: '18px',
+                      height: '18px',
+                      borderRadius: '6px',
+                      backgroundColor: '#1C0008',
+                      border: '1px solid var(--gold-border)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'var(--gold-primary)'
+                    }}
+                  >
+                    <Award size={10} />
+                  </div>
                 </div>
                 <div>
                   <h3 style={{ fontSize: '1.12rem', color: '#FFF', fontWeight: 800, margin: 0 }}>
@@ -348,8 +395,13 @@ export function FoundersSection() {
             onClick={(e) => e.stopPropagation()}
           >
             <img
-              src="/assets/founders.jpg"
+              src={foundersSrc}
               alt="Pillars behind Vela Shootz: Yashwanth Batta & Galeeb Mohammad"
+              onError={(e) => {
+                if (e.currentTarget.src !== window.location.origin + '/assets/founders.jpg') {
+                  e.currentTarget.src = '/assets/founders.jpg';
+                }
+              }}
               style={{
                 width: '100%',
                 height: 'auto',
