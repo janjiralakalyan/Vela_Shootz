@@ -220,7 +220,7 @@ export const INITIAL_PORTFOLIO = [
     reelsCount: 5,
     portraitsCount: 18,
     image: '/assets/hero-cinematic.jpg',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-party-crowd-raising-their-hands-in-a-concert-40898-large.mp4',
+    videoUrl: 'https://res.cloudinary.com/u1j7rkcf/video/upload/v1790658701/IMG_4890.mp4',
     featured: true,
     client: 'Youth Fest Committee',
     highlight: '5 reels edited on location and posted before the closing concert ended.'
@@ -236,7 +236,7 @@ export const INITIAL_PORTFOLIO = [
     reelsCount: 10,
     portraitsCount: 24,
     image: '/assets/hero-cinematic.jpg',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-bride-and-groom-smiling-and-looking-at-each-other-42790-large.mp4',
+    videoUrl: 'https://res.cloudinary.com/u1j7rkcf/video/upload/v1790658378/IMG_4889.mp4',
     featured: true,
     client: 'Private Couple',
     highlight: 'Wedding reel crossed 250k views on Instagram within 48 hours.'
@@ -252,7 +252,7 @@ export const INITIAL_PORTFOLIO = [
     reelsCount: 3,
     portraitsCount: 12,
     image: '/assets/hero-cinematic.jpg',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-barista-pouring-milk-into-coffee-cup-42410-large.mp4',
+    videoUrl: 'https://res.cloudinary.com/u1j7rkcf/video/upload/v1790659458/IMG_4891.mp4',
     featured: true,
     client: 'Kaviar Hospitality',
     highlight: 'Hook-driven promotional reel generated a 3x table booking surge on launch week.'
@@ -268,7 +268,7 @@ export const INITIAL_PORTFOLIO = [
     reelsCount: 4,
     portraitsCount: 8,
     image: '/assets/hero-cinematic.jpg',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-dj-mixing-music-in-a-party-40899-large.mp4',
+    videoUrl: 'https://res.cloudinary.com/u1j7rkcf/video/upload/v1790659525/IMG_4990.mp4',
     featured: true,
     client: 'Astral Media',
     highlight: 'Delivered 2 live stage drops while DJ was still performing set 2.'
