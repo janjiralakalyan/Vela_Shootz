@@ -283,15 +283,15 @@ export const INITIAL_PORTFOLIO = [
     services: 'Haldi Slow-Mo & Family Reels',
     reelsCount: 6,
     portraitsCount: 15,
-    image: '/assets/hero-cinematic.jpg',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-hands-throwing-colorful-powder-in-the-air-40879-large.mp4',
-    featured: false,
+    image: 'https://res.cloudinary.com/u1j7rkcf/video/upload/v1791134062/lv_0_20260930212233.jpg',
+    videoUrl: 'https://res.cloudinary.com/u1j7rkcf/video/upload/v1791134062/lv_0_20260930212233.mp4',
+    featured: true,
     client: 'Sharma Family',
-    highlight: 'High frame-rate 4K 60fps flower petal bursts with antique color treatment.'
+    highlight: 'High frame-rate flower bursts with rich cinematic color treatment.'
   },
   {
     id: 'proj-6',
-    title: 'Urban Fitwear — Streetwear Drop 04',
+    title: 'Urban Style — Streetwear & Creator Drop',
     category: 'Creators',
     categorySlug: 'creators',
     date: '2026-01-15',
@@ -299,9 +299,9 @@ export const INITIAL_PORTFOLIO = [
     services: 'Fashion Lookbook Reels',
     reelsCount: 3,
     portraitsCount: 20,
-    image: '/assets/hero-cinematic.jpg',
-    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-young-woman-posing-for-the-camera-in-a-fashion-photoshoot-42407-large.mp4',
-    featured: false,
+    image: 'https://res.cloudinary.com/u1j7rkcf/video/upload/v1791134033/IMG_5368.MOV.jpg',
+    videoUrl: 'https://res.cloudinary.com/u1j7rkcf/video/upload/v1791134033/IMG_5368.MOV.mp4',
+    featured: true,
     client: 'Pulse Activewear',
     highlight: 'Paced quick transitions perfectly matched to trending audio.'
   }

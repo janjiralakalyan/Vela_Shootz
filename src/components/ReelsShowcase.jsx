@@ -43,6 +43,39 @@ export function ReelsShowcase({ navigateTo }) {
       likes: '9.2K',
       sound: 'Lo-Fi Chill Beats Commercial',
       targetPkgId: 'pkg-promotions'
+    },
+    {
+      id: 'reel-4',
+      title: 'DJ Astral — Sonic Pulse Stage Drop',
+      category: 'INSTANT REELS',
+      project: 'Astral Media Live',
+      videoUrl: 'https://res.cloudinary.com/u1j7rkcf/video/upload/v1790659525/IMG_4990.mp4',
+      views: '215K',
+      likes: '28.9K',
+      sound: 'EDM Festival Mix (Live Cut)',
+      targetPkgId: 'pkg-half-day'
+    },
+    {
+      id: 'reel-5',
+      title: 'Celebration Moments & Candid Cuts',
+      category: 'EVENTS',
+      project: 'Vela Event Spotlight',
+      videoUrl: 'https://res.cloudinary.com/u1j7rkcf/video/upload/v1791134062/lv_0_20260930212233.mp4',
+      views: '178K',
+      likes: '24.6K',
+      sound: 'Viral Beat Drop (Live Crowd Reverb)',
+      targetPkgId: 'pkg-quick-reels'
+    },
+    {
+      id: 'reel-6',
+      title: 'Cinematic Fashion & Streetwear Drop',
+      category: 'CREATORS',
+      project: 'Urban Aesthetic Showcase',
+      videoUrl: 'https://res.cloudinary.com/u1j7rkcf/video/upload/v1791134033/IMG_5368.MOV.mp4',
+      views: '245K',
+      likes: '36.8K',
+      sound: 'Modern Trap Aesthetic (Vela Master)',
+      targetPkgId: 'pkg-promotions'
     }
   ];
 

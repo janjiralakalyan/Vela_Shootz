@@ -1141,8 +1141,8 @@ export function AdminDashboard({ navigateTo }) {
                     services: 'Mobile Instant Reels',
                     reelsCount: 3,
                     portraitsCount: 10,
-                    image: '/assets/hero-cinematic.jpg',
-                    videoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-party-crowd-raising-their-hands-in-a-concert-40898-large.mp4',
+                    image: 'https://res.cloudinary.com/u1j7rkcf/video/upload/v1791134062/lv_0_20260930212233.jpg',
+                    videoUrl: 'https://res.cloudinary.com/u1j7rkcf/video/upload/v1791134062/lv_0_20260930212233.mp4',
                     featured: true,
                     highlight: 'Instant mobile reels captured and delivered same day.'
                   });

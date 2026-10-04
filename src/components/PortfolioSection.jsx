@@ -16,6 +16,8 @@ export function PortfolioSection({ navigateTo }) {
   const animFrameIdRef = useRef(null);
   const scrollXRef = useRef(0);
 
+  const formatVideoUrl = (url) => (url && url.includes('cloudinary.com') ? url.replace(/\.mov$/i, '.mp4') : url);
+
   const handleBookStyle = (project) => {
     let targetPkg = packages.find(p => p.category.toLowerCase() === project.categorySlug) || packages[0];
     selectPackage(targetPkg);
@@ -200,7 +202,7 @@ export function PortfolioSection({ navigateTo }) {
                 >
                   {/* 100% FULL-BLEED CLEAN 9:16 VERTICAL VIDEO */}
                   <video
-                    src={project.videoUrl}
+                    src={formatVideoUrl(project.videoUrl)}
                     autoPlay
                     loop
                     muted
@@ -313,7 +315,7 @@ export function PortfolioSection({ navigateTo }) {
               {/* VIDEO PLAYER & CONTROLS */}
               <div style={{ position: 'relative', width: '100%', height: '380px', backgroundColor: '#000', overflow: 'hidden' }}>
                 <video
-                  src={activeModalProject.videoUrl}
+                  src={formatVideoUrl(activeModalProject.videoUrl)}
                   autoPlay
                   loop
                   muted={isModalMuted}
