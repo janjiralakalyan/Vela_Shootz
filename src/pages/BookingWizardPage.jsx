@@ -224,8 +224,10 @@ export function BookingWizardPage({ navigateTo }) {
 
   const handleWhatsAppBookingNotification = () => {
     if (!confirmedBooking) return;
-    const msg = `Hello Vela Shootz! I have reserved a booking on your website.\n\n*Reference ID:* ${confirmedBooking.bookingReference}\n*Name:* ${confirmedBooking.customerName}\n*Package:* ${confirmedBooking.packageName}\n*Date:* ${confirmedBooking.date}\n*Slot:* ${confirmedBooking.startTime}\n*Venue:* ${confirmedBooking.location}\n*Total:* ₹${confirmedBooking.totalAmount.toLocaleString('en-IN')}`;
-    window.open(`https://wa.me/917095891554?text=${encodeURIComponent(msg)}`, '_blank');
+    const advance = Math.round(confirmedBooking.totalAmount * 0.5);
+    const balance = confirmedBooking.totalAmount - advance;
+    const msg = `Hello Vela Shootz! I have reserved a booking on your website.\n\n*Reference ID:* ${confirmedBooking.bookingReference}\n*Name:* ${confirmedBooking.customerName}\n*Package:* ${confirmedBooking.packageName}\n*Date:* ${confirmedBooking.date}\n*Slot:* ${confirmedBooking.startTime}\n*Venue:* ${confirmedBooking.location}\n*Total Investment:* ₹${confirmedBooking.totalAmount.toLocaleString('en-IN')}\n*50% Advance to Lock Date:* ₹${advance.toLocaleString('en-IN')}\n*50% Balance on Delivery:* ₹${balance.toLocaleString('en-IN')}`;
+    window.open(`https://wa.me/918978270208?text=${encodeURIComponent(msg)}`, '_blank');
   };
 
   const stepLabels = [
@@ -511,6 +513,7 @@ export function BookingWizardPage({ navigateTo }) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', marginTop: '1.5rem' }}>
                   {filteredPackages.map((pkg) => {
                     const isSelected = selectedPackage && selectedPackage.id === pkg.id;
+                    const advanceAmount = Math.round((pkg.price || 0) * 0.5);
                     return (
                       <div
                         key={pkg.id}
@@ -539,11 +542,16 @@ export function BookingWizardPage({ navigateTo }) {
                             </span>
                             {pkg.badge && <span className="gold-chip">{pkg.badge}</span>}
                           </div>
-                          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.6rem' }}>
+                          {pkg.subtitle && (
+                            <div style={{ fontSize: '0.78rem', color: 'var(--gold-primary)', fontWeight: '700', marginBottom: '0.4rem' }}>
+                              {pkg.subtitle}
+                            </div>
+                          )}
+                          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.6rem', lineHeight: '1.4' }}>
                             {pkg.description}
                           </p>
                           <div style={{ fontSize: '0.8rem', color: 'var(--gold-bright)' }}>
-                            {pkg.coverageHours} Hours Coverage • {pkg.reelsCount} Polished Reels
+                            {pkg.coverageHours} Hours Coverage • {pkg.reelsCount} Reels {pkg.portraitsCount > 0 && `• ${pkg.portraitsCount} Portraits`}
                           </div>
                         </div>
 
@@ -552,7 +560,9 @@ export function BookingWizardPage({ navigateTo }) {
                             <div style={{ fontSize: '1.8rem', fontWeight: '900', color: '#FFF' }}>
                               ₹{pkg.price.toLocaleString('en-IN')}
                             </div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)' }}>Base Deliverable</div>
+                            <div style={{ fontSize: '0.72rem', color: 'var(--gold-light)' }}>
+                              50% Advance: ₹{advanceAmount.toLocaleString('en-IN')}
+                            </div>
                           </div>
                           <div
                             style={{
@@ -603,7 +613,9 @@ export function BookingWizardPage({ navigateTo }) {
                           >
                             {isAdded && <Check size={12} color="#1A0008" strokeWidth={3} />}
                           </div>
-                          <span>{addon.name} (+₹{addon.price.toLocaleString('en-IN')})</span>
+                          <span>
+                            {addon.name} {addon.price > 0 ? `(+₹${addon.price.toLocaleString('en-IN')})` : '(Custom Quote)'}
+                          </span>
                         </button>
                       );
                     })}
@@ -949,18 +961,63 @@ export function BookingWizardPage({ navigateTo }) {
                       <span>- ₹{(appliedPromotion.originalPrice - appliedPromotion.finalPrice).toLocaleString('en-IN')}</span>
                     </div>
                   )}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--gold-border)' }}>
-                    <span style={{ fontSize: '1.1rem', fontWeight: '800', color: 'var(--gold-primary)' }}>Total Investment</span>
-                    <span style={{ fontSize: '2.2rem', fontWeight: '900', color: 'var(--gold-bright)' }}>
-                      ₹{calculateTotal().toLocaleString('en-IN')}
-                    </span>
+                  {/* TOTAL & 50% ADVANCE BREAKDOWN */}
+                  <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--gold-border)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '0.6rem' }}>
+                      <span style={{ fontSize: '1.1rem', fontWeight: '800', color: 'var(--gold-primary)' }}>Total Investment</span>
+                      <span style={{ fontSize: '2.2rem', fontWeight: '900', color: 'var(--gold-bright)' }}>
+                        ₹{calculateTotal().toLocaleString('en-IN')}
+                      </span>
+                    </div>
+
+                    <div
+                      style={{
+                        padding: '0.8rem 1rem',
+                        borderRadius: 'var(--radius-sm)',
+                        background: 'rgba(229, 173, 54, 0.08)',
+                        border: '1px dashed var(--gold-border)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '0.4rem'
+                      }}
+                    >
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.86rem' }}>
+                        <span style={{ color: '#FFF', fontWeight: '700' }}>🔒 50% Advance to Lock Date:</span>
+                        <span style={{ color: 'var(--gold-bright)', fontWeight: '900' }}>
+                          ₹{Math.round(calculateTotal() * 0.5).toLocaleString('en-IN')}
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.84rem', color: 'var(--text-muted)' }}>
+                        <span>50% Balance on Delivery Schedule:</span>
+                        <span>₹{(calculateTotal() - Math.round(calculateTotal() * 0.5)).toLocaleString('en-IN')}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.84rem', color: 'var(--text-muted)' }}>
-                <ShieldCheck size={18} color="#4ADE80" />
-                <span>Slot is reserved immediately upon confirmation. Your unique booking ID will be generated instantly.</span>
+              {/* POLICY REASSURANCE BANNER */}
+              <div
+                style={{
+                  background: 'rgba(20, 0, 7, 0.65)',
+                  border: '1px solid rgba(229, 173, 54, 0.25)',
+                  borderRadius: 'var(--radius-sm)',
+                  padding: '1rem 1.2rem',
+                  marginBottom: '1rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.4rem'
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.84rem', color: 'var(--gold-primary)', fontWeight: '700' }}>
+                  <ShieldCheck size={18} color="#4ADE80" />
+                  <span>Vela Shootz Booking Policy Highlights</span>
+                </div>
+                <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.5' }}>
+                  • <strong>50% Advance</strong> locks date reservation (non-refundable once reserved).<br />
+                  • Each reel includes <strong>1 minor revision</strong> (clip, text, audio adjustment).<br />
+                  • <strong>Raw footage</strong> is not included by default. All shoots operate under our published booking policy.
+                </div>
               </div>
             </div>
           )}
@@ -1027,10 +1084,13 @@ export function BookingWizardPage({ navigateTo }) {
                 >
                   {confirmedBooking.bookingReference}
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', gap: '1.2rem', fontSize: '0.8rem', color: 'var(--text-muted)', flexWrap: 'wrap' }}>
                   <span>📅 {confirmedBooking.date}</span>
                   <span>🕐 {confirmedBooking.startTime}</span>
-                  <span>💰 ₹{confirmedBooking.totalAmount.toLocaleString('en-IN')}</span>
+                  <span>💰 Total: ₹{confirmedBooking.totalAmount.toLocaleString('en-IN')}</span>
+                </div>
+                <div style={{ marginTop: '0.6rem', padding: '0.4rem 0.8rem', background: 'rgba(229, 173, 54, 0.12)', borderRadius: '6px', fontSize: '0.78rem', color: 'var(--gold-bright)', fontWeight: '700' }}>
+                  🔒 50% Advance to Lock Slot: ₹{Math.round(confirmedBooking.totalAmount * 0.5).toLocaleString('en-IN')}
                 </div>
                 <p style={{ fontSize: '0.76rem', color: 'var(--text-dim)', marginTop: '0.8rem' }}>
                   Save this reference to track your live editing and reel delivery status.

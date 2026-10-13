@@ -1,10 +1,10 @@
 // ============================================================
 // VELA SHOOTZ - FREE AUTOMATED WHATSAPP ALERTS SERVICE
 // Uses CallMeBot Free WhatsApp API to send instant booking pings
-// to the admin's phone (+91 70958 91554) with zero subscription fees.
+// to the admin's phone (+91 89782 70208) with zero subscription fees.
 // ============================================================
 
-export const ADMIN_PHONE = '917095891554';
+export const ADMIN_PHONE = '918978270208';
 const STORAGE_KEY = 'vs_callmebot_apikey';
 
 export const getCallMeBotApiKey = () => {
@@ -20,7 +20,7 @@ export const setCallMeBotApiKey = (key) => {
 };
 
 /**
- * Send an automated WhatsApp alert to the admin phone (+91 70958 91554)
+ * Send an automated WhatsApp alert to the admin phone (+91 89782 70208)
  * whenever a new client booking is submitted.
  */
 export const sendAdminWhatsAppAlert = async (booking) => {
@@ -52,7 +52,7 @@ ${booking.requirements ? `📝 *Notes:* "${booking.requirements}"\n` : ''}━━
     
     // mode: 'no-cors' allows browser to dispatch GET request without CORS blocks
     await fetch(url, { method: 'GET', mode: 'no-cors' });
-    console.log('[WhatsApp Alert] Alert dispatched to admin phone +91 70958 91554');
+    console.log('[WhatsApp Alert] Alert dispatched to admin phone +91 89782 70208');
     return { success: true };
   } catch (err) {
     console.error('[WhatsApp Alert] Failed to send alert:', err);
@@ -70,7 +70,7 @@ export const sendTestWhatsAppAlert = async (testApiKey) => {
   }
 
   const phone = ADMIN_PHONE;
-  const msg = `🔔 *Vela Shootz WhatsApp Alert Test*\n\nYour automated WhatsApp booking alerts are now ACTIVE for phone: +91 70958 91554!\n\nWhenever a client reserves a shoot slot, you will receive an instant ping here. 🚀`;
+  const msg = `🔔 *Vela Shootz WhatsApp Alert Test*\n\nYour automated WhatsApp booking alerts are now ACTIVE for phone: +91 89782 70208!\n\nWhenever a client reserves a shoot slot, you will receive an instant ping here. 🚀`;
 
   const url = `https://api.callmebot.com/whatsapp.php?phone=+${phone}&text=${encodeURIComponent(msg)}&apikey=${encodeURIComponent(apiKey)}`;
   

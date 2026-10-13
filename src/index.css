@@ -502,6 +502,23 @@ h2 .gold-gradient-text {
   .timeline-card {
     max-width: 100% !important;
   }
+
+  /* ======== MOBILE SECTION SPACING FIXES ======== */
+  /* Reduce section padding, min-heights, and gaps to eliminate
+     excessive empty space between sections on mobile viewports */
+
+  /* SECTION HEADER — tighter bottom margin */
+  .section-header {
+    margin-bottom: 1.8rem !important;
+  }
+
+  /* CONTAINERS — slightly less horizontal padding */
+  .container,
+  .container-wide,
+  .container-narrow {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
 }
 
 /* PREFERS REDUCED MOTION */

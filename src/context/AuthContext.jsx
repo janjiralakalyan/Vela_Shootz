@@ -1,7 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { getAdminAuth, setAdminAuth, clearAdminAuth } from '../data/storage';
 
-const AuthContext = createContext();
+const defaultAuthState = {
+  adminUser: null,
+  isAuthenticated: false,
+  login: () => ({ success: false, message: 'Auth not initialized' }),
+  logout: () => {}
+};
+
+const AuthContext = createContext(defaultAuthState);
 
 export function AuthProvider({ children }) {
   const [adminUser, setAdminUser] = useState(getAdminAuth());
@@ -47,5 +54,6 @@ export function AuthProvider({ children }) {
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const ctx = useContext(AuthContext);
+  return ctx || defaultAuthState;
 }

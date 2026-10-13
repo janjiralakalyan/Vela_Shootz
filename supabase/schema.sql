@@ -208,62 +208,71 @@ ALTER PUBLICATION supabase_realtime ADD TABLE blocked_slots;
 -- ============================================================
 INSERT INTO packages (id, category, category_name, name, price, is_custom, badge, featured, coverage_hours, reels_count, portraits_count, description, includes, extra_addons, cta)
 VALUES
-  ('pkg-quick-reels', 'on-spot', 'On-Spot Reels', 'Quick Reels', 999, false, 'QUICK START', false, '2', '2', '0',
-   'Perfect for quick gatherings, personal moments, and casual events that need immediate reel delivery.',
-   '["2 Hours Coverage","2 Polished Reels","On-location shooting","Professionally edited reels","iPhone 16 Pro 4K HDR capture","Same-day delivery turnaround"]',
-   '[{"id":"extra-hour-reel","name":"+1 Extra Hour & +1 Extra Reel","price":550}]', 'BOOK QUICK REELS'),
+  ('pkg-quick-reels', 'on-spot', 'On-Spot Reels', 'Quick Reels', 1299, false, 'QUICK START', false, '2', '2', '0',
+   'Perfect for Instagram creators, personal moments, quick brand promos, and lifestyle shoots.',
+   '["2 hours of on-location shooting","2 professionally edited vertical reels","iPhone HDR video capture","Basic creative direction","Trending audio selection","Professional color grading","Social-media-ready delivery","Same-day delivery turnaround"]',
+   '[{"id":"extra-hour-reel","name":"+1 Extra Hour + 1 Extra Reel","price":699}]', 'BOOK QUICK REELS'),
 
-  ('pkg-half-day', 'on-spot', 'On-Spot Reels', 'Half Day', 1499, false, 'MOST POPULAR', true, '4', '3', '5',
-   'Our signature package for celebrations, parties, and vibrant events wanting comprehensive on-spot coverage.',
-   '["4 Hours Coverage","3 High-Energy Reels","5 Specialized iPhone Portraits","On-location mobile production","Trending audio curation","Color graded for social platforms"]',
-   '[{"id":"extra-reel","name":"Extra Reel","price":299}]', 'BOOK HALF DAY'),
+  ('pkg-half-day', 'on-spot', 'On-Spot Reels', 'Half Day', 1999, false, 'MOST POPULAR', true, '4', '3', '5',
+   'Our signature package for influencers, clothing brands, cafes, and multiple content concepts.',
+   '["4 hours of on-location shooting","3 professionally edited vertical reels","5 professional iPhone portraits","Creative shooting assistance","Trending audio selection","Professional color grading","Social-media-optimized delivery","24–48 hours delivery"]',
+   '[{"id":"extra-reel","name":"+1 Additional Reel","price":399}]', 'BOOK HALF DAY'),
 
   ('pkg-family-events', 'on-spot', 'On-Spot Reels', 'Family Events', null, true, 'TAILORED', false, 'Flexible', 'Custom', 'Custom',
    'Tell us what you''re planning and we''ll build the package around your event.',
    '["Birthdays & Anniversaries","Engagements & Naming ceremonies","Family functions & Celebrations","Custom hours & deliverables","Dedicated mobile cinematographer","Family group portraits & highlight reel"]',
    '[]', 'LET''S HAVE A TALK'),
 
-  ('pkg-promotions', 'business', 'Business', 'Promotions', 2499, false, 'GROWTH', true, '3', '3', '10',
-   'High-conversion, social-first reels tailored for brands, cafes, retail, and business promos.',
-   '["3 Promotional Reels","On-location shooting","Product & ambiance highlight shots","Hook-driven narrative editing","Commercial-safe audio & sound design","Ready-to-upload delivery within 24 hours"]',
-   '[{"id":"extra-biz-reel","name":"Additional Campaign Reel","price":699}]', 'BOOK PROMOTION PACKAGE'),
+  ('pkg-promotions', 'business', 'Business', 'Promotions', 2999, false, 'GROWTH', true, '3', '3', '10',
+   'High-conversion, social-first commercial reels tailored for cafes, stores, gyms, and brand launches.',
+   '["3 hours of on-location shooting","3 promotional vertical reels","10 professional portraits","Product highlight shots","Ambience & interior shots","Brand-focused visuals","Hook-driven narrative editing","Trending audio selection","Professional color grading","Ready-to-upload delivery within 24 hours"]',
+   '[{"id":"extra-biz-reel","name":"Additional Campaign Reel","price":699}]', 'BOOK PROMOTIONS'),
 
   ('pkg-custom-business', 'business', 'Business', 'Custom Business Package', null, true, 'ENTERPRISE', false, 'Custom', 'Custom', 'Custom',
    'Every business has different content requirements. Let''s build a package around yours.',
    '["Brand campaigns & Product launches","Corporate summits & Business events","Social media content retainers","Promotional ad videos","Multi-angle mobile crew","Dedicated creative direction"]',
    '[]', 'LET''S HAVE A TALK'),
 
-  ('pkg-wedding-essentials', 'weddings', 'Weddings', 'Wedding Essentials', 12999, false, 'ESSENTIAL', false, '16', '10', '20',
-   'Capturing candid wedding bliss without intrusion — instant reels delivered while the celebration is live.',
-   '["Haldi + Marriage OR 2 Days Coverage","10 Dynamic Wedding Reels","20 Specialized Cinematic Portraits","On-location mobile cinematography","Fast-turnaround same-day edits","Share-ready private cloud gallery"]',
-   '[{"id":"extra-wedding-day","name":"Additional Function Day","price":4999}]', 'BOOK WEDDING COVERAGE'),
+  ('pkg-wedding-essentials', 'weddings', 'Weddings', 'Wedding Essentials', 14999, false, 'ONE FUNCTION', false, '8', '8', '15',
+   'Dedicated mobile wedding content capturing every candid emotion of one important function.',
+   '["Up to 8 hours of coverage (ONE function)","8 professionally edited wedding reels","15 cinematic portraits","On-location mobile cinematography","Professional color grading","Trending audio selection","Priority reel editing","Digital delivery"]',
+   '[{"id":"additional-function","name":"Additional Function (Custom Quote)","price":0,"isCustom":true}]', 'BOOK WEDDING ESSENTIALS'),
 
-  ('pkg-full-marriage', 'weddings', 'Weddings', 'Full Marriage', 59999, false, 'COMPLETE WEDDING', true, '36', '25', '45',
-   'The ultimate royal coverage for 3-day luxury celebrations. Complete instant reel mastery.',
-   '["3 Full Days Coverage (Mehendi, Sangeet, Wedding, Reception)","25 Cinematic Vertical Reels","45 Specialized High-Res Portraits","2 Dedicated Mobile Creators with Gimbals & Wireless Audio","Priority live-editing station on-site","VIP reel delivery for immediate guest posting"]',
-   '[{"id":"drone-aerial","name":"Aerial 4K Reel Teasers","price":7500}]', 'BOOK FULL WEDDING'),
+  ('pkg-full-marriage', 'weddings', 'Weddings', 'Full Marriage', 59999, false, '3-DAY ROYAL WEDDING', true, '36', '25', '45',
+   'The ultimate royal coverage across multiple functions and days with 2 dedicated mobile creators.',
+   '["Up to 36 total coverage hours (max 12h/day across 3 days)","25 cinematic vertical wedding reels","45 cinematic portraits","2 dedicated mobile creators","Gimbal cinematography & studio wireless audio","Multi-function coverage","Priority live-editing setup on-site","Same-day priority reels for instant guest sharing","Professional color grading","Trending audio selection","Private cloud gallery","Coordinated coverage across schedule"]',
+   '[{"id":"drone-aerial","name":"Aerial 4K Reel Teaser","price":7500}]', 'BOOK FULL WEDDING'),
 
   ('pkg-custom-wedding', 'weddings', 'Weddings', 'Custom Wedding Package', null, true, 'BESPOKE', false, 'Bespoke', 'Bespoke', 'Bespoke',
    'Suitable for destination weddings, multi-city celebrations, and tailored deliverables.',
    '["Additional days & functions","Additional reels & specialized portraits","Multi-creator production crew","Customized music & editing aesthetics","Full destination travel readiness","VIP direct creative director access"]',
    '[]', 'LET''S HAVE A TALK')
 
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (id) DO UPDATE SET
+  name = EXCLUDED.name,
+  price = EXCLUDED.price,
+  coverage_hours = EXCLUDED.coverage_hours,
+  reels_count = EXCLUDED.reels_count,
+  portraits_count = EXCLUDED.portraits_count,
+  description = EXCLUDED.description,
+  includes = EXCLUDED.includes,
+  extra_addons = EXCLUDED.extra_addons,
+  badge = EXCLUDED.badge;
 
 -- ============================================================
 -- SEED: Initial Promotions
 -- ============================================================
 INSERT INTO promotions (id, title, category, discount, original_price, final_price, target_package_id, valid_until, description, terms, badge, active)
 VALUES
-  ('promo-fest-2026', 'FESTIVAL SPECIAL: ₹500 OFF', 'Festival Offer', '₹500 OFF', 1499, 999, 'pkg-half-day',
+  ('promo-fest-2026', 'FESTIVAL SPECIAL: ₹500 OFF', 'Festival Offer', '₹500 OFF', 1999, 1499, 'pkg-half-day',
    '2026-04-30T23:59:59Z', 'Celebrate your event with our Most Popular Half-Day reel package at an exclusive festive pricing.',
    'Valid on bookings completed before April 30. Applicable to on-spot events within city limits.', 'LIMITED TIME', true),
 
-  ('promo-college-fest', 'COLLEGE CREATOR PASS', 'College Event Offer', 'FREE +1 EXTRA REEL', 1298, 999, 'pkg-quick-reels',
+  ('promo-college-fest', 'COLLEGE CREATOR PASS', 'College Event Offer', 'FREE +1 EXTRA REEL', 1998, 1299, 'pkg-quick-reels',
    '2026-05-15T23:59:59Z', 'Book Quick Reels for your college fest or club event and receive an additional edited reel absolutely free.',
    'Valid student ID must be presented during shoot.', 'STUDENT PASS', true),
 
-  ('promo-wedding-early', 'WEDDING EARLY BIRD: ₹3,000 OFF', 'Wedding Offer', '₹3,000 OFF', 12999, 9999, 'pkg-wedding-essentials',
+  ('promo-wedding-early', 'WEDDING EARLY BIRD: ₹3,000 OFF', 'Wedding Offer', '₹3,000 OFF', 14999, 11999, 'pkg-wedding-essentials',
    '2026-05-31T23:59:59Z', 'Reserve your 2026 wedding dates 30+ days in advance and unlock flat ₹3,000 savings on Wedding Essentials.',
    'Requires advance deposit. Non-transferable.', 'EARLY BIRD', true)
 

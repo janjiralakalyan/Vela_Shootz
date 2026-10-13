@@ -1,5 +1,6 @@
 import React from 'react';
 import { PricingSection } from '../components/PricingSection';
+import { BookingPolicySection } from '../components/BookingPolicySection';
 import { FaqSection } from '../components/FaqSection';
 import { FinalCta } from '../components/FinalCta';
 
@@ -17,6 +18,7 @@ export function PricingPage({ navigateTo }) {
       </div>
 
       <PricingSection navigateTo={navigateTo} />
+      <BookingPolicySection navigateTo={navigateTo} />
       <FaqSection />
       <FinalCta navigateTo={navigateTo} />
     </div>

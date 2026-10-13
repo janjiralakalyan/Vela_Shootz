@@ -156,7 +156,7 @@ export function AdminDashboard({ navigateTo }) {
     try {
       setCallMeBotApiKey(waApiKey);
       await sendTestWhatsAppAlert(waApiKey);
-      setWaStatusMsg('Test alert dispatched to +91 70958 91554! Check your WhatsApp.');
+      setWaStatusMsg('Test alert dispatched to +91 89782 70208! Check your WhatsApp.');
     } catch (err) {
       setWaStatusMsg('Failed to send test alert: ' + (err.message || 'Unknown error'));
     } finally {
@@ -440,7 +440,7 @@ export function AdminDashboard({ navigateTo }) {
                       Instant WhatsApp Alerts to Admin Phone
                     </h3>
                     <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
-                      Sends automated booking notifications to <span style={{ color: '#4ADE80', fontWeight: '700' }}>+91 70958 91554</span> with 100% free lifetime gateway.
+                      Sends automated booking notifications to <span style={{ color: '#4ADE80', fontWeight: '700' }}>+91 89782 70208</span> with 100% free lifetime gateway.
                     </div>
                   </div>
                 </div>
@@ -537,7 +537,7 @@ export function AdminDashboard({ navigateTo }) {
                     }}
                   >
                     {waTestLoading ? <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <Bell size={14} />}
-                    <span>{waTestLoading ? 'Sending Test...' : 'Send Test Alert to +91 70958 91554'}</span>
+                    <span>{waTestLoading ? 'Sending Test...' : 'Send Test Alert to +91 89782 70208'}</span>
                   </button>
 
                   {waStatusMsg && (

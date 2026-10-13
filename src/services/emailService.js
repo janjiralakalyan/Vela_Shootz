@@ -9,31 +9,58 @@
 // Mailer Server repo: d:\VelaShootz\vela-mailer-server
 // ============================================================
 
-// Base URL of the deployed Vela Mailer Server.
-// For local development:  http://localhost:3001
-// For production:         https://vela-mailer-server.vercel.app  (update after deploy)
-const MAILER_BASE_URL = import.meta.env.VITE_MAILER_URL || 'http://localhost:3001';
+// Endpoints for Vela Mailer Server:
+// Local: http://localhost:3001
+// Deployed Vercel: https://vela-shortz-gky.vercel.app
+const REMOTE_MAILER_URL = import.meta.env.VITE_MAILER_URL || 'https://vela-shortz-gky.vercel.app';
+const LOCAL_MAILER_URL  = 'http://localhost:3001';
 
 /**
  * Internal helper — POST data to the mailer server.
+ * Tries local first in development mode, falling back to remote URL (or vice-versa in production).
  *
  * @param {string} endpoint - e.g. '/api/send-booking-email'
  * @param {object} payload  - JSON body to send
  * @returns {Promise<object>}
  */
 async function postToMailer(endpoint, payload) {
-  const response = await fetch(`${MAILER_BASE_URL}${endpoint}`, {
-    method:  'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify(payload),
-  });
+  const isDev = import.meta.env.DEV;
+  // In development, prefer local mailer server first; in production prefer remote
+  const candidates = isDev
+    ? [LOCAL_MAILER_URL, REMOTE_MAILER_URL]
+    : [REMOTE_MAILER_URL, LOCAL_MAILER_URL];
 
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Mailer server error (${response.status}): ${errText}`);
+  // Remove duplicates
+  const targetUrls = [...new Set(candidates.filter(Boolean))];
+  let lastError = null;
+
+  for (const baseUrl of targetUrls) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+      const response = await fetch(`${baseUrl}${endpoint}`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
+        signal:  controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      if (response.ok) {
+        return await response.json();
+      }
+
+      const errText = await response.text();
+      lastError = new Error(`Mailer (${baseUrl}) returned ${response.status}: ${errText}`);
+    } catch (err) {
+      lastError = err;
+      console.warn(`[Email Service] Attempt at ${baseUrl}${endpoint} failed (${err.message}). Trying fallback...`);
+    }
   }
 
-  return response.json();
+  throw lastError || new Error('All mailer server endpoints failed.');
 }
 
 /**

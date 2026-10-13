@@ -100,17 +100,17 @@ export function PricingSection({ navigateTo }) {
           })}
         </div>
 
-        {/* PRICING CARDS GRID (COMPACT) */}
+        {/* PRICING CARDS GRID */}
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: '1rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))',
+            gap: '1.2rem',
             alignItems: 'stretch'
           }}
         >
           {currentPackages.map((pkg) => {
-            const isPopular = pkg.badge === 'MOST POPULAR' || pkg.badge === 'COMPLETE WEDDING';
+            const isPopular = pkg.badge === 'MOST POPULAR' || pkg.badge === 'COMPLETE WEDDING' || pkg.badge === '3-DAY ROYAL WEDDING';
 
             return (
               <div
@@ -120,7 +120,7 @@ export function PricingSection({ navigateTo }) {
                   display: 'flex',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
-                  padding: '1.4rem 1.3rem',
+                  padding: '1.5rem 1.4rem',
                   border: isPopular ? '2px solid var(--gold-primary)' : '1px solid var(--gold-border)',
                   background: isPopular
                     ? 'linear-gradient(145deg, rgba(75, 4, 28, 0.95) 0%, rgba(35, 0, 12, 0.95) 100%)'
@@ -139,9 +139,9 @@ export function PricingSection({ navigateTo }) {
                       background: isPopular ? 'var(--grad-gold)' : 'rgba(229, 173, 54, 0.15)',
                       color: isPopular ? '#1A0008' : 'var(--gold-primary)',
                       border: `1px solid ${isPopular ? 'transparent' : 'var(--gold-border)'}`,
-                      padding: '0.2rem 0.6rem',
+                      padding: '0.2rem 0.65rem',
                       borderRadius: 'var(--radius-full)',
-                      fontSize: '0.65rem',
+                      fontSize: '0.64rem',
                       fontWeight: '900',
                       letterSpacing: '0.06em',
                       textTransform: 'uppercase'
@@ -152,15 +152,23 @@ export function PricingSection({ navigateTo }) {
                 )}
 
                 <div>
-                  <h3 style={{ fontSize: '1.18rem', color: '#FFF', marginBottom: '0.3rem' }}>
+                  <h3 style={{ fontSize: '1.25rem', color: '#FFF', marginBottom: '0.2rem' }}>
                     {pkg.name}
                   </h3>
-                  <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: '1.4', marginBottom: '0.9rem' }}>
+
+                  {/* SUBTITLE */}
+                  {pkg.subtitle && (
+                    <div style={{ fontSize: '0.78rem', color: 'var(--gold-primary)', fontWeight: '700', marginBottom: '0.5rem', letterSpacing: '0.04em' }}>
+                      {pkg.subtitle}
+                    </div>
+                  )}
+
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.45', marginBottom: '0.9rem' }}>
                     {pkg.description}
                   </p>
 
                   {/* PRICE DISPLAY */}
-                  <div style={{ marginBottom: '0.9rem', paddingBottom: '0.75rem', borderBottom: '1px solid rgba(229, 173, 54, 0.12)' }}>
+                  <div style={{ marginBottom: '1rem', paddingBottom: '0.85rem', borderBottom: '1px solid rgba(229, 173, 54, 0.12)' }}>
                     {pkg.isCustom ? (
                       <div>
                         <div style={{ fontSize: '1.8rem', fontWeight: '900', color: 'var(--gold-primary)', lineHeight: 1 }}>
@@ -174,21 +182,50 @@ export function PricingSection({ navigateTo }) {
                       <div>
                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.25rem' }}>
                           <span style={{ fontSize: '1.1rem', color: 'var(--gold-primary)', fontWeight: '700' }}>₹</span>
-                          <span style={{ fontSize: '2rem', fontWeight: '900', color: '#FFF', lineHeight: 1 }}>
+                          <span style={{ fontSize: '2.1rem', fontWeight: '900', color: '#FFF', lineHeight: 1 }}>
                             {pkg.price.toLocaleString('en-IN')}
                           </span>
                         </div>
-                        <div style={{ fontSize: '0.74rem', color: 'var(--text-dim)', marginTop: '0.2rem' }}>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-dim)', marginTop: '0.25rem' }}>
                           {pkg.coverageHours} Hours • {pkg.reelsCount} Reels {pkg.portraitsCount > 0 && `• ${pkg.portraitsCount} Portraits`}
                         </div>
                       </div>
                     )}
                   </div>
 
+                  {/* PERFECT FOR TAGS */}
+                  {pkg.perfectFor && pkg.perfectFor.length > 0 && (
+                    <div style={{ marginBottom: '1rem' }}>
+                      <div style={{ fontSize: '0.68rem', fontWeight: '800', color: 'var(--gold-bright)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.35rem' }}>
+                        Ideal for:
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                        {pkg.perfectFor.slice(0, 4).map((tag, tIdx) => (
+                          <span
+                            key={tIdx}
+                            style={{
+                              fontSize: '0.7rem',
+                              padding: '0.2rem 0.5rem',
+                              borderRadius: '4px',
+                              background: 'rgba(229, 173, 54, 0.1)',
+                              border: '1px solid rgba(229, 173, 54, 0.2)',
+                              color: '#FAF0E6'
+                            }}
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* DELIVERABLES LIST */}
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.2rem' }}>
-                    {pkg.includes.map((inc, i) => (
-                      <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+                    <div style={{ fontSize: '0.68rem', fontWeight: '800', color: 'var(--gold-bright)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.1rem' }}>
+                      What's Included:
+                    </div>
+                    {pkg.includes.slice(0, 6).map((inc, i) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.55rem' }}>
                         <div
                           style={{
                             width: '15px',
@@ -199,12 +236,13 @@ export function PricingSection({ navigateTo }) {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            flexShrink: 0
+                            flexShrink: 0,
+                            marginTop: '0.15rem'
                           }}
                         >
                           <Check size={10} strokeWidth={3} />
                         </div>
-                        <span style={{ fontSize: '0.78rem', color: '#FAF0E6' }}>{inc}</span>
+                        <span style={{ fontSize: '0.78rem', color: '#FAF0E6', lineHeight: 1.4 }}>{inc}</span>
                       </div>
                     ))}
 
@@ -212,19 +250,19 @@ export function PricingSection({ navigateTo }) {
                     {pkg.extraAddons && pkg.extraAddons.length > 0 && (
                       <div
                         style={{
-                          marginTop: '0.4rem',
-                          padding: '0.5rem 0.7rem',
+                          marginTop: '0.5rem',
+                          padding: '0.6rem 0.8rem',
                           background: 'rgba(229, 173, 54, 0.08)',
                           borderRadius: 'var(--radius-sm)',
                           border: '1px dashed var(--gold-border)'
                         }}
                       >
-                        <div style={{ fontSize: '0.68rem', fontWeight: '700', color: 'var(--gold-bright)', textTransform: 'uppercase', marginBottom: '0.15rem' }}>
-                          Extra supported:
+                        <div style={{ fontSize: '0.68rem', fontWeight: '700', color: 'var(--gold-bright)', textTransform: 'uppercase', marginBottom: '0.2rem' }}>
+                          Extra Service Available:
                         </div>
                         {pkg.extraAddons.map(a => (
-                          <div key={a.id} style={{ fontSize: '0.76rem', color: '#FFF', fontWeight: '600' }}>
-                            {a.name}: ₹{a.price.toLocaleString('en-IN')}
+                          <div key={a.id} style={{ fontSize: '0.78rem', color: '#FFF', fontWeight: '600' }}>
+                            {a.name} — {a.price > 0 ? `₹${a.price.toLocaleString('en-IN')}` : 'Custom Quote'}
                           </div>
                         ))}
                       </div>
@@ -238,9 +276,10 @@ export function PricingSection({ navigateTo }) {
                   className={isPopular ? 'btn-primary' : 'btn-secondary'}
                   style={{
                     width: '100%',
-                    padding: '0.65rem 1rem',
+                    padding: '0.7rem 1rem',
                     fontSize: '0.82rem',
-                    letterSpacing: '0.04em'
+                    letterSpacing: '0.04em',
+                    marginTop: '0.8rem'
                   }}
                 >
                   <span>{pkg.cta}</span>
@@ -249,6 +288,37 @@ export function PricingSection({ navigateTo }) {
               </div>
             );
           })}
+        </div>
+
+        {/* BOTTOM POLICY LINK BANNER */}
+        <div
+          style={{
+            marginTop: '2.4rem',
+            textAlign: 'center',
+            padding: '1.2rem',
+            borderRadius: 'var(--radius-md)',
+            background: 'rgba(34, 0, 11, 0.6)',
+            border: '1px solid var(--gold-border)'
+          }}
+        >
+          <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)', margin: '0 0 0.6rem 0' }}>
+            50% Advance locks date reservation • 1 minor revision per reel included • Same-day & 24h delivery
+          </p>
+          <a
+            href="#policy-section"
+            style={{
+              color: 'var(--gold-primary)',
+              fontWeight: '700',
+              fontSize: '0.84rem',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              textDecoration: 'underline'
+            }}
+          >
+            <span>Read full shoot packages, limits, and booking policy rules below</span>
+            <ArrowRight size={14} />
+          </a>
         </div>
 
       </div>

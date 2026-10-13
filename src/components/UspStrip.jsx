@@ -27,6 +27,7 @@ export function UspStrip() {
 
   return (
     <section
+      id="usp-strip"
       style={{
         borderTop: '1px solid var(--gold-border)',
         borderBottom: '1px solid var(--gold-border)',

@@ -42,7 +42,7 @@ export function CustomEnquiryModal() {
 
   const handleWhatsAppHandoff = () => {
     const text = `Hello Vela Shootz! I just submitted a custom package enquiry:\nName: ${formData.name}\nType: ${formData.eventType}\nDate: ${formData.eventDate || 'TBD'}\nLocation: ${formData.location || 'Local'}\nBudget: ${formData.budgetRange}`;
-    window.open(`https://wa.me/917095891554?text=${encodeURIComponent(text)}`, '_blank');
+    window.open(`https://wa.me/918978270208?text=${encodeURIComponent(text)}`, '_blank');
   };
 
   const handleClose = () => {

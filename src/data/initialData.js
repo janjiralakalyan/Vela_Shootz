@@ -1,5 +1,5 @@
 // VELA SHOOTZ SEED DATA
-// Configured according to Master Prompt Section 66 & Specifications
+// Configured according to Vela Shootz Packages & Booking Policy
 
 export const INITIAL_PACKAGES = [
   // ON-SPOT REELS
@@ -8,24 +8,68 @@ export const INITIAL_PACKAGES = [
     category: 'on-spot',
     categoryName: 'On-Spot Reels',
     name: 'Quick Reels',
-    price: 999,
+    price: 1299,
     isCustom: false,
     badge: 'QUICK START',
     featured: false,
     coverageHours: 2,
     reelsCount: 2,
     portraitsCount: 0,
-    description: 'Perfect for quick gatherings, personal moments, and casual events that need immediate reel delivery.',
-    includes: [
-      '2 Hours Coverage',
-      '2 Polished Reels',
-      'On-location shooting',
-      'Professionally edited reels',
-      'iPhone 16 Pro 4K HDR capture',
-      'Same-day delivery turnaround'
+    subtitle: '2 Hours · 2 Reels',
+    delivery: 'Same-day delivery',
+    description: 'Perfect for Instagram creators, personal content, small businesses, quick promotional content, fashion/lifestyle shoots, and simple product content.',
+    perfectFor: [
+      'Instagram creators',
+      'Personal content',
+      'Small businesses',
+      'Quick promotional content',
+      'Fashion and lifestyle shoots',
+      'Simple product content'
     ],
+    includes: [
+      '2 hours of on-location shooting',
+      '2 professionally edited vertical reels',
+      'iPhone HDR video capture',
+      'Basic creative direction',
+      'Trending audio selection',
+      'Professional color grading',
+      'Social-media-ready delivery',
+      'Same-day delivery'
+    ],
+    shootProcess: {
+      before: [
+        'Confirm date and time',
+        'Confirm shooting location',
+        'Discuss the content concept',
+        'Confirm outfits, products and required props'
+      ],
+      during: [
+        'Maximum 2 hours of shooting',
+        'One primary location',
+        'Footage captured according to the agreed concept'
+      ],
+      after: [
+        'Best footage selected',
+        '2 reels professionally edited',
+        'Color grading and audio added',
+        'Final reels delivered digitally'
+      ]
+    },
     extraAddons: [
-      { id: 'extra-hour-reel', name: '+1 Extra Hour & +1 Extra Reel', price: 550 }
+      { id: 'extra-hour-reel', name: '+1 Extra Hour + 1 Extra Reel', price: 699 }
+    ],
+    extraAddonNotes: '+1 Extra Hour + 1 Extra Reel — ₹699',
+    limits: [
+      'Maximum 2 shooting hours',
+      '2 included reels',
+      'One primary location',
+      'Customer must provide required products, outfits and props',
+      'Advanced VFX, animation and complex effects are not included',
+      'Actors/models are not included',
+      'Drone footage is not included',
+      'Raw footage is not included',
+      '1 minor revision per included reel',
+      'Additional travel may be charged separately'
     ],
     cta: 'BOOK QUICK REELS'
   },
@@ -34,24 +78,65 @@ export const INITIAL_PACKAGES = [
     category: 'on-spot',
     categoryName: 'On-Spot Reels',
     name: 'Half Day',
-    price: 1499,
+    price: 1999,
     isCustom: false,
     badge: 'MOST POPULAR',
     featured: true,
     coverageHours: 4,
     reelsCount: 3,
     portraitsCount: 5,
-    description: 'Our signature package for celebrations, parties, and vibrant events wanting comprehensive on-spot coverage.',
-    includes: [
-      '4 Hours Coverage',
-      '3 High-Energy Reels',
-      '5 Specialized iPhone Portraits',
-      'On-location mobile production',
-      'Trending audio curation',
-      'Color graded for social platforms'
+    subtitle: '4 Hours · 3 Reels · 5 Portraits',
+    delivery: '24–48 hours',
+    description: 'Our signature package for influencers, personal brands, clothing brands, fitness creators, cafes, and multiple content concepts.',
+    perfectFor: [
+      'Influencers',
+      'Personal brands',
+      'Clothing brands',
+      'Fitness creators',
+      'Cafes and restaurants',
+      'Small businesses',
+      'Portfolio shoots',
+      'Multiple content concepts'
     ],
+    includes: [
+      '4 hours of on-location shooting',
+      '3 professionally edited vertical reels',
+      '5 professional iPhone portraits',
+      'Creative shooting assistance',
+      'Trending audio selection',
+      'Professional color grading',
+      'Social-media-optimized delivery'
+    ],
+    shootProcess: {
+      before: [
+        'Confirm shooting location',
+        'Discuss content concepts',
+        'Confirm outfits & products',
+        'Plan approximate reel concepts',
+        'Establish shooting sequence'
+      ],
+      during: [
+        'Maximum 4 hours of shooting',
+        'One primary location recommended',
+        'Footage captured according to the agreed concepts'
+      ]
+    },
     extraAddons: [
-      { id: 'extra-reel', name: 'Extra Reel', price: 299 }
+      { id: 'extra-reel', name: '+1 Additional Reel', price: 399 }
+    ],
+    extraAddonNotes: 'Additional reel editing does not automatically extend the shooting time. If additional shooting time is required, it must be booked separately.',
+    limits: [
+      'Maximum 4 shooting hours',
+      '3 included reels',
+      '5 included portraits',
+      'One primary location',
+      'Multiple locations may require additional travel/time charges',
+      'Customer waiting time counts toward the booked shooting time',
+      'Actors/models are not included',
+      'Special equipment is not included unless agreed',
+      'Drone footage is not included',
+      'Raw footage is not included',
+      '1 minor revision per included reel'
     ],
     cta: 'BOOK HALF DAY'
   },
@@ -67,15 +152,23 @@ export const INITIAL_PACKAGES = [
     coverageHours: 'Flexible',
     reelsCount: 'Custom',
     portraitsCount: 'Custom',
+    subtitle: 'Custom Hours & Deliverables',
     description: "Tell us what you're planning and we'll build the package around your event.",
-    includes: [
+    perfectFor: [
       'Birthdays & Anniversaries',
+      'Engagements & Naming ceremonies',
+      'Family functions & Celebrations',
+      'Custom hours & deliverables'
+    ],
+    includes: [
+      'Birthdays & Anniversaries coverage',
       'Engagements & Naming ceremonies',
       'Family functions & Celebrations',
       'Custom hours & deliverables',
       'Dedicated mobile cinematographer',
       'Family group portraits & highlight reel'
     ],
+    extraAddons: [],
     cta: "LET'S HAVE A TALK"
   },
 
@@ -85,26 +178,77 @@ export const INITIAL_PACKAGES = [
     category: 'business',
     categoryName: 'Business',
     name: 'Promotions',
-    price: 2499,
+    price: 2999,
     isCustom: false,
     badge: 'GROWTH',
     featured: true,
     coverageHours: 3,
     reelsCount: 3,
     portraitsCount: 10,
-    description: 'High-conversion, social-first reels tailored for brands, cafes, retail, and business promos.',
+    subtitle: '3 Hours · 3 Promotional Reels · 10 Portraits',
+    delivery: 'Ready-to-upload delivery within 24 hours',
+    description: 'High-conversion, social-first commercial reels tailored for cafes, stores, salons, gyms, product launches, and brand growth.',
+    perfectFor: [
+      'Businesses needing social-media marketing content',
+      'Cafes & Restaurants',
+      'Retail stores',
+      'Clothing brands',
+      'Salons & Spas',
+      'Gyms & Fitness centers',
+      'Startups & Product launches',
+      'Local businesses',
+      'Service businesses'
+    ],
     includes: [
-      '3 Promotional Reels',
-      'On-location shooting',
-      'Product & ambiance highlight shots',
-      'Hook-driven narrative editing',
-      'Commercial-safe audio & sound design',
+      '3 hours of on-location shooting',
+      '3 promotional vertical reels',
+      '10 professional portraits',
+      'Product highlight shots',
+      'Ambience shots',
+      'Brand-focused visuals',
+      'Hook-driven editing',
+      'Trending audio selection',
+      'Professional color grading',
       'Ready-to-upload delivery within 24 hours'
     ],
+    reelStructure: [
+      'Reel 1: Hook → Product → Experience → CTA',
+      'Reel 2: Location/Ambience → Product → Customer Experience',
+      'Reel 3: Offer/Service → Benefits → CTA'
+    ],
+    shootProcess: {
+      before: [
+        'Business name & brand information',
+        'Products/services to promote',
+        'Shooting location & ambience details',
+        'Current offers, if applicable',
+        'Target audience & main promotional message',
+        'Vela Shootz prepares a simple content direction'
+      ],
+      during: [
+        'Maximum 3 hours of on-location shooting',
+        'One business / location',
+        'Capturing brand-focused visuals, products, and customer experience'
+      ]
+    },
     extraAddons: [
       { id: 'extra-biz-reel', name: 'Additional Campaign Reel', price: 699 }
     ],
-    cta: 'BOOK PROMOTION PACKAGE'
+    extraAddonNotes: 'The additional reel is subject to available shooting/editing capacity. Additional shooting time is not included automatically.',
+    limits: [
+      'Maximum 3 shooting hours',
+      '3 included promotional reels',
+      '10 included portraits',
+      'One business/location',
+      'Actors/models are not included',
+      'Paid advertising/boosting is not included',
+      'Social-media account management is not included',
+      'Advanced product photography is not included',
+      'Drone footage is not included',
+      'Major script or concept changes after filming may incur additional charges',
+      '1 minor revision per included reel'
+    ],
+    cta: 'BOOK PROMOTIONS'
   },
   {
     id: 'pkg-custom-business',
@@ -118,7 +262,14 @@ export const INITIAL_PACKAGES = [
     coverageHours: 'Custom',
     reelsCount: 'Custom',
     portraitsCount: 'Custom',
+    subtitle: 'Custom Retainers & Campaigns',
     description: 'Every business has different content requirements. Let’s build a package around yours.',
+    perfectFor: [
+      'Brand campaigns & Product launches',
+      'Corporate summits & Business events',
+      'Social media content retainers',
+      'Promotional ad videos'
+    ],
     includes: [
       'Brand campaigns & Product launches',
       'Corporate summits & Business events',
@@ -127,6 +278,7 @@ export const INITIAL_PACKAGES = [
       'Multi-angle mobile crew',
       'Dedicated creative direction'
     ],
+    extraAddons: [],
     cta: "LET'S HAVE A TALK"
   },
 
@@ -136,26 +288,69 @@ export const INITIAL_PACKAGES = [
     category: 'weddings',
     categoryName: 'Weddings',
     name: 'Wedding Essentials',
-    price: 12999,
+    price: 14999,
     isCustom: false,
-    badge: 'ESSENTIAL',
+    badge: 'ONE FUNCTION',
     featured: false,
-    coverageHours: 16,
-    reelsCount: 10,
-    portraitsCount: 20,
-    description: 'Capturing candid wedding bliss without intrusion — instant reels delivered while the celebration is live.',
+    coverageHours: 8,
+    reelsCount: 8,
+    portraitsCount: 15,
+    subtitle: '1 Function · Up to 8 Hours',
+    delivery: 'Delivery schedule confirmed at booking',
+    description: 'Dedicated mobile wedding content capturing every candid emotion and celebration for ONE important function.',
+    perfectFor: [
+      'Haldi',
+      'Mehendi',
+      'Sangeet',
+      'Engagement',
+      'Wedding Ceremony',
+      'Reception'
+    ],
+    functionRule: 'Wedding Essentials covers ONE function only. One function means one separately scheduled wedding event (Haldi = 1 function, Mehendi = 1 function, Sangeet = 1 function, Wedding Ceremony = 1 function, Reception = 1 function). A customer cannot combine multiple separately scheduled functions under one Wedding Essentials booking (e.g. Haldi + Sangeet + Wedding = Multiple Functions requires a separate quotation or the Full Marriage package).',
     includes: [
-      'Haldi + Marriage OR 2 Days Coverage',
-      '10 Dynamic Wedding Reels',
-      '20 Specialized Cinematic Portraits',
+      'Up to 8 hours of coverage (ONE function)',
+      '8 professionally edited wedding reels',
+      '15 cinematic portraits',
       'On-location mobile cinematography',
-      'Fast-turnaround same-day edits',
-      'Share-ready private cloud gallery'
+      'Professional color grading',
+      'Trending audio selection',
+      'Priority reel editing',
+      'Digital delivery'
     ],
+    shootProcess: {
+      before: [
+        'Confirm function type (Haldi, Mehendi, Sangeet, Ceremony, or Reception)',
+        'Date, venue & reporting time',
+        'Coverage duration & important moments',
+        'Couple/family requirements & content preferences'
+      ],
+      during: [
+        'Bride and groom focus',
+        'Family & ritual moments',
+        'Decorations & candid interactions',
+        'Candid guest moments & couple portraits',
+        'Important event highlights'
+      ]
+    },
     extraAddons: [
-      { id: 'extra-wedding-day', name: 'Additional Function Day', price: 4999 }
+      { id: 'additional-function', name: 'Additional Function (Custom Quote)', price: 0, isCustom: true }
     ],
-    cta: 'BOOK WEDDING COVERAGE'
+    extraAddonNotes: 'Additional function pricing depends on: Function duration, Date, Venue, Location, Travel requirements, Team availability, Required deliverables. Additional functions are not automatically charged at ₹7,999.',
+    limits: [
+      'Maximum 8 hours',
+      'One function only',
+      '8 included reels',
+      '15 included portraits',
+      'Traditional wedding album is not included',
+      'Full-length cinematic wedding film is not included',
+      'Drone coverage is not included',
+      'Professional photography is not included unless separately booked',
+      'Makeup, decoration, venue and catering are not included',
+      'Raw footage is not included',
+      '1 minor revision per included reel',
+      'Overtime requires prior approval and additional charges'
+    ],
+    cta: 'BOOK WEDDING ESSENTIALS'
   },
   {
     id: 'pkg-full-marriage',
@@ -164,24 +359,64 @@ export const INITIAL_PACKAGES = [
     name: 'Full Marriage',
     price: 59999,
     isCustom: false,
-    badge: 'COMPLETE WEDDING',
+    badge: '3-DAY ROYAL WEDDING',
     featured: true,
     coverageHours: 36,
     reelsCount: 25,
     portraitsCount: 45,
-    description: 'The ultimate royal coverage for 3-day luxury celebrations. Complete instant reel mastery.',
+    subtitle: '3 Days · Up to 36 Total Coverage Hours',
+    delivery: 'Priority reels during/after events + remaining content per agreed schedule',
+    description: 'The ultimate royal coverage across multiple functions and days with 2 dedicated mobile creators.',
+    perfectFor: [
+      'Three-day weddings',
+      'Large weddings',
+      'Multi-function weddings',
+      'Luxury celebrations',
+      'Customers wanting a dedicated content team'
+    ],
     includes: [
-      '3 Full Days Coverage (Mehendi, Sangeet, Wedding, Reception)',
-      '25 Cinematic Vertical Reels',
-      '45 Specialized High-Res Portraits',
-      '2 Dedicated Mobile Creators with Gimbals & Wireless Audio',
-      'Priority live-editing station on-site',
-      'VIP reel delivery for immediate guest posting'
+      'Up to 36 total coverage hours',
+      'Maximum 12 coverage hours per day',
+      '25 cinematic vertical wedding reels',
+      '45 cinematic portraits',
+      '2 dedicated mobile creators',
+      'Gimbal cinematography',
+      'Multi-function coverage',
+      'Priority live-editing setup',
+      'Same-day priority reels',
+      'Professional color grading',
+      'Trending audio selection',
+      'Private cloud gallery',
+      'Coordinated coverage across the wedding schedule'
     ],
+    exampleCoverage: [
+      'DAY 1: Haldi, Mehendi, Family moments',
+      'DAY 2: Sangeet, Couple portraits, Guest interactions',
+      'DAY 3: Wedding ceremony, Reception, Couple highlights (Final schedule confirmed before booking)'
+    ],
+    creatorsInfo: 'The package includes 2 mobile creators during the agreed coverage periods. Both creators may operate simultaneously when required to capture different angles, people or moments.',
+    importantCoverageRule: '36 hours means TOTAL coverage across all 3 days. Maximum: 12 hours per day. Unused hours from one day cannot automatically be transferred to another day (e.g. If customer uses only 8 hours on Day 1, the unused 4 hours do not automatically become 16 hours on Day 2).',
     extraAddons: [
-      { id: 'drone-aerial', name: 'Aerial 4K Reel Teasers', price: 7500 }
+      { id: 'drone-aerial', name: 'Aerial 4K Reel Teaser', price: 7500 }
     ],
-    cta: 'BOOK FULL WEDDING'
+    extraAddonNotes: 'Aerial 4K Reel Teaser — ₹7,500. Subject to: Drone/operator availability, Location feasibility, Weather conditions, Applicable permissions and regulations.',
+    limits: [
+      'Maximum 36 total coverage hours',
+      'Maximum 12 hours per day',
+      '3 scheduled coverage days',
+      '25 included reels',
+      '45 included portraits',
+      '2 creators during agreed coverage periods',
+      'Traditional wedding album is not included',
+      'Full-length cinematic wedding film is not included',
+      'Professional photography is not included unless separately booked',
+      'Drone coverage is not included (available as optional extra)',
+      'Makeup, decoration, venue and catering are not included',
+      'Raw footage is not included',
+      '1 minor revision per included reel',
+      'Additional coverage requires a separate quotation'
+    ],
+    cta: 'BOOK FULL MARRIAGE'
   },
   {
     id: 'pkg-custom-wedding',
@@ -195,7 +430,14 @@ export const INITIAL_PACKAGES = [
     coverageHours: 'Bespoke',
     reelsCount: 'Bespoke',
     portraitsCount: 'Bespoke',
+    subtitle: 'Destination & Custom Weddings',
     description: 'Suitable for destination weddings, multi-city celebrations, and tailored deliverables.',
+    perfectFor: [
+      'Destination weddings',
+      'Multi-city celebrations',
+      'Extended family gatherings',
+      'Tailored deliverable schedules'
+    ],
     includes: [
       'Additional days & functions',
       'Additional reels & specialized portraits',
@@ -204,9 +446,290 @@ export const INITIAL_PACKAGES = [
       'Full destination travel readiness',
       'VIP direct creative director access'
     ],
+    extraAddons: [],
     cta: "LET'S HAVE A TALK"
   }
 ];
+
+// ============================================================
+// COMPREHENSIVE BOOKING POLICIES & TERMS
+// ============================================================
+export const BOOKING_POLICIES = [
+  {
+    id: 'policy-reel-definition',
+    title: 'What Counts as a Reel?',
+    icon: 'Film',
+    summary: '1 Reel = 1 final edited vertical social-media video delivered as one final file.',
+    details: [
+      'Multiple versions of the same reel are not counted as separate included reels.',
+      'Requests for different hooks, alternate edits, different languages, different versions, additional aspect ratios, or completely new concepts are treated as additional editing work.'
+    ]
+  },
+  {
+    id: 'policy-portrait-definition',
+    title: 'What Counts as a Portrait?',
+    icon: 'Camera',
+    summary: '1 Portrait = 1 individually selected and professionally edited final photograph.',
+    details: [
+      'Duplicate versions, alternate color grades, or additional photographs beyond the package quantity are not included.'
+    ]
+  },
+  {
+    id: 'policy-revisions',
+    title: 'Revision Policy',
+    icon: 'Edit3',
+    summary: 'Each included reel comes with 1 minor revision.',
+    details: [
+      'Minor revision includes: small clip replacement, text correction, audio adjustment, small timing adjustment.',
+      'Not included: completely new concept, complete re-edit, new script, new footage, new shoot, or multiple alternate versions.',
+      'Additional editing work may be quoted separately.'
+    ]
+  },
+  {
+    id: 'policy-raw-footage',
+    title: 'Raw Footage Policy',
+    icon: 'HardDrive',
+    summary: 'Raw footage is not included in any standard package.',
+    details: [
+      'Raw unedited footage can only be provided if separately agreed and priced before delivery.'
+    ]
+  },
+  {
+    id: 'policy-location',
+    title: 'Location & Travel Policy',
+    icon: 'MapPin',
+    summary: 'Quick Reels, Half Day, and Promotions are designed around one primary location.',
+    details: [
+      'Customer must provide the correct shooting location before booking confirmation.',
+      'If multiple locations are requested, additional travel fees apply and travel time may reduce shooting time.',
+      'For wedding packages, all venues should be disclosed before confirmation.'
+    ]
+  },
+  {
+    id: 'policy-shooting-time',
+    title: 'Shooting Time Policy',
+    icon: 'Clock',
+    summary: 'The booked time is the shooting/coverage window. Clock starts at agreed reporting time.',
+    details: [
+      'Customer delays do not automatically extend the booking window.',
+      'Example: If a 4-hour shoot starts at 2:00 PM, coverage is 2:00 PM–6:00 PM. If customer is ready at 2:30 PM, the shoot still ends at 6:00 PM.'
+    ]
+  },
+  {
+    id: 'policy-overtime',
+    title: 'Overtime Policy',
+    icon: 'AlertCircle',
+    summary: 'Additional shooting time is not automatic.',
+    details: [
+      'Overtime requires prior Vela Shootz approval and incurs additional charges.',
+      'The team is not required to extend the booking beyond agreed time without prior confirmation.'
+    ]
+  },
+  {
+    id: 'policy-payment',
+    title: 'Booking & Payment Policy',
+    icon: 'CreditCard',
+    summary: '50% Advance is required to reserve your date. 50% Balance due per delivery schedule.',
+    details: [
+      'A booking is confirmed only after the required advance payment has been received.',
+      '50% Advance → Date Reservation.',
+      '50% Balance → According to the agreed delivery/payment schedule.',
+      'For large wedding bookings, the final payment schedule is confirmed in the booking confirmation.'
+    ]
+  },
+  {
+    id: 'policy-date-reservation',
+    title: 'Date Reservation Policy',
+    icon: 'Calendar',
+    summary: 'A date is not considered reserved until the advance payment is received.',
+    details: [
+      'Vela Shootz may accept another booking for an unconfirmed date.',
+      'Slots remain available to other clients until advance payment is completed.'
+    ]
+  },
+  {
+    id: 'policy-cancellation',
+    title: 'Cancellation Policy',
+    icon: 'XCircle',
+    summary: 'The booking advance is strictly non-refundable once a date is reserved and blocked.',
+    details: [
+      'Once a date has been reserved and blocked for the customer, the booking advance is non-refundable.',
+      'Any exception is solely at the discretion of Vela Shootz and must be confirmed in writing.'
+    ]
+  },
+  {
+    id: 'policy-rescheduling',
+    title: 'Rescheduling Policy',
+    icon: 'RefreshCw',
+    summary: 'Date changes are subject to availability and advance notice.',
+    details: [
+      'Rescheduling depends on Vela Shootz team availability, venue availability, and advance notice.',
+      'A new date is not confirmed until Vela Shootz confirms it.',
+      'For weddings, rescheduling terms may be stricter because multiple team members and blocked availability are involved.'
+    ]
+  },
+  {
+    id: 'policy-weather',
+    title: 'Weather & Unforeseen Conditions',
+    icon: 'CloudRain',
+    summary: 'For outdoor shoots, weather-related changes are accommodated where possible.',
+    details: [
+      'If safe shooting is not possible due to extreme weather, Vela Shootz may offer a rescheduled date where possible.',
+      'Additional costs caused by venue changes, travel changes, or extended requirements may apply.'
+    ]
+  },
+  {
+    id: 'policy-delivery',
+    title: 'Content Delivery Timelines',
+    icon: 'Send',
+    summary: 'Lightning fast turnarounds tailored for each package type.',
+    details: [
+      '🎬 Quick Reels: Same-day delivery',
+      '🎥 Half Day: 24–48 hours delivery',
+      '📣 Promotions: Within 24 hours delivery',
+      '💍 Wedding Essentials: Delivery schedule confirmed at booking',
+      '👑 Full Marriage: Priority reels during/after events + remaining content according to agreed delivery schedule',
+      'Note: Timelines may change when customer delays approvals, provides required material late, or requests additional revisions.'
+    ]
+  },
+  {
+    id: 'policy-exclusions',
+    title: 'Services Not Included by Default',
+    icon: 'ShieldAlert',
+    summary: 'Items not included unless specifically quoted or booked.',
+    details: [
+      'Professional makeup, decoration, venue, and catering are not included.',
+      'Models/actors, paid ads/boosting, and social-media account management are not included.',
+      'Traditional photo albums, physical prints, and full-length cinematic wedding films are not included.',
+      'Drone coverage (except add-on), raw footage, and special equipment are not included.',
+      'Travel/accommodation outside agreed service area is charged separately.'
+    ]
+  },
+  {
+    id: 'policy-scope',
+    title: 'Final Scope Rule',
+    icon: 'Lock',
+    summary: 'The selected package defines the agreed scope of work.',
+    details: [
+      'Any request outside included hours, locations, reels, portraits, creators, functions, revisions, or services requires an additional charge or custom quotation.',
+      'No additional work is considered confirmed until Vela Shootz approves it in writing.',
+      'All final deliverables, timings, and additional services must be recorded in the booking confirmation.'
+    ]
+  }
+];
+
+// ============================================================
+// PACKAGE COMPARISON MATRIX TABLE
+// ============================================================
+export const PACKAGE_COMPARISON_TABLE = [
+  {
+    id: 'pkg-quick-reels',
+    name: 'Quick Reels',
+    icon: '🎬',
+    price: 1299,
+    priceLabel: '₹1,299',
+    coverage: '2 Hours',
+    reels: '2 Reels',
+    portraits: '—',
+    bestFor: 'Quick social content & personal moments',
+    delivery: 'Same-day',
+    creators: '1 Creator'
+  },
+  {
+    id: 'pkg-half-day',
+    name: 'Half Day',
+    icon: '🎥',
+    price: 1999,
+    priceLabel: '₹1,999',
+    coverage: '4 Hours',
+    reels: '3 Reels',
+    portraits: '5 Portraits',
+    bestFor: 'Personal, influencer & cafe shoots',
+    delivery: '24–48 Hours',
+    creators: '1 Creator'
+  },
+  {
+    id: 'pkg-promotions',
+    name: 'Promotions',
+    icon: '📣',
+    price: 2999,
+    priceLabel: '₹2,999',
+    coverage: '3 Hours',
+    reels: '3 Reels',
+    portraits: '10 Portraits',
+    bestFor: 'Business & brand marketing',
+    delivery: 'Within 24 Hours',
+    creators: '1 Creator'
+  },
+  {
+    id: 'pkg-wedding-essentials',
+    name: 'Wedding Essentials',
+    icon: '💍',
+    price: 14999,
+    priceLabel: '₹14,999',
+    coverage: '1 Function / Up to 8 Hours',
+    reels: '8 Reels',
+    portraits: '15 Portraits',
+    bestFor: 'One important wedding function',
+    delivery: 'Confirmed at booking',
+    creators: '1 Cinematographer'
+  },
+  {
+    id: 'pkg-full-marriage',
+    name: 'Full Marriage',
+    icon: '👑',
+    price: 59999,
+    priceLabel: '₹59,999',
+    coverage: '3 Days / Up to 36 Hours',
+    reels: '25 Reels',
+    portraits: '45 Portraits',
+    bestFor: 'Complete multi-function royal wedding',
+    delivery: 'Same-day priority reels',
+    creators: '2 Dedicated Creators'
+  }
+];
+
+// ============================================================
+// SIMPLE PACKAGE GUIDE
+// ============================================================
+export const SIMPLE_PACKAGE_GUIDE = [
+  {
+    question: 'Need quick Instagram content?',
+    recommendation: 'Quick Reels',
+    packageId: 'pkg-quick-reels',
+    price: '₹1,299',
+    desc: '2 Hours · 2 Reels · Same-day delivery'
+  },
+  {
+    question: 'Need more time and portraits?',
+    recommendation: 'Half Day',
+    packageId: 'pkg-half-day',
+    price: '₹1,999',
+    desc: '4 Hours · 3 Reels · 5 Portraits'
+  },
+  {
+    question: 'Are you a business promoting your products or services?',
+    recommendation: 'Promotions',
+    packageId: 'pkg-promotions',
+    price: '₹2,999',
+    desc: '3 Hours · 3 Promotional Reels · 10 Portraits'
+  },
+  {
+    question: 'Need one wedding function covered?',
+    recommendation: 'Wedding Essentials',
+    packageId: 'pkg-wedding-essentials',
+    price: '₹14,999',
+    desc: '1 Function · Up to 8 Hours · 8 Reels · 15 Portraits'
+  },
+  {
+    question: 'Need multiple wedding functions across three days?',
+    recommendation: 'Full Marriage',
+    packageId: 'pkg-full-marriage',
+    price: '₹59,999',
+    desc: '3 Days · Up to 36 Hours · 25 Reels · 45 Portraits · 2 Mobile Creators'
+  }
+];
+
 
 export const INITIAL_PORTFOLIO = [
   {
@@ -358,8 +881,8 @@ export const INITIAL_PROMOTIONS = [
     title: 'FESTIVAL SPECIAL: ₹500 OFF',
     category: 'Festival Offer',
     discount: '₹500 OFF',
-    originalPrice: 1499,
-    finalPrice: 999,
+    originalPrice: 1999,
+    finalPrice: 1499,
     targetPackageId: 'pkg-half-day',
     validUntil: '2026-04-30T23:59:59',
     description: 'Celebrate your event with our Most Popular Half-Day reel package at an exclusive festive pricing.',
@@ -372,8 +895,8 @@ export const INITIAL_PROMOTIONS = [
     title: 'COLLEGE CREATOR PASS',
     category: 'College Event Offer',
     discount: 'FREE +1 EXTRA REEL',
-    originalPrice: 1298,
-    finalPrice: 999,
+    originalPrice: 1998,
+    finalPrice: 1299,
     targetPackageId: 'pkg-quick-reels',
     validUntil: '2026-05-15T23:59:59',
     description: 'Book Quick Reels for your college fest or club event and receive an additional edited reel absolutely free.',
@@ -386,8 +909,8 @@ export const INITIAL_PROMOTIONS = [
     title: 'WEDDING EARLY BIRD: ₹3,000 OFF',
     category: 'Wedding Offer',
     discount: '₹3,000 OFF',
-    originalPrice: 12999,
-    finalPrice: 9999,
+    originalPrice: 14999,
+    finalPrice: 11999,
     targetPackageId: 'pkg-wedding-essentials',
     validUntil: '2026-05-31T23:59:59',
     description: 'Reserve your 2026 wedding dates 30+ days in advance and unlock flat ₹3,000 savings on Wedding Essentials.',
@@ -430,72 +953,41 @@ export const INITIAL_TESTIMONIALS = [
     rating: 5,
     date: '2026-01-28',
     instagram: '@genshark.ai'
-  },
-  {
-    id: 't-4',
-    customerName: 'Aditya & Sneha',
-    event: 'Wedding Reception',
-    review: 'We had our first cinematic wedding reel posted to Instagram while our reception dinner was still going on! The guests were stunned. No waiting for 3 months.',
-    rating: 5,
-    date: '2026-01-20',
-    instagram: '@aditya_sneha_vows'
-  },
-  {
-    id: 't-5',
-    customerName: 'Rohit Verma',
-    event: 'College Fest President',
-    review: 'Vela Shootz moved with our energy. The iPhone setup meant they were in the center of the mosh pit without bulky cameras getting in the way. Viral edits delivered same night.',
-    rating: 5,
-    date: '2026-02-14',
-    instagram: '@rohit_festhead'
-  },
-  {
-    id: 't-6',
-    customerName: 'Meera Nambiar',
-    event: 'Cafe Brand Launch',
-    review: 'Super crisp 4K quality, beautiful antique warm grading, and they understood exactly how Reels algorithm hooks work. Our booking tables were packed.',
-    rating: 5,
-    date: '2026-02-02',
-    instagram: '@kaviar_blr'
   }
 ];
 
 export const INITIAL_FAQS = [
   {
     question: 'How fast will I receive my reels?',
-    answer: 'Speed is our primary promise! For On-Spot Quick Reels and Half-Day packages, content is edited and delivered the same day — often within 2 to 4 hours of shooting so you can post while the excitement is still fresh. Wedding essentials are delivered within 24–48 hours.'
+    answer: 'Turnaround depends on your package: Quick Reels (₹1,299) are delivered the same day! Half Day (₹1,999) is delivered within 24–48 hours, Promotions (₹2,999) within 24 hours, and Full Marriage includes same-day priority reels during the wedding with remaining content delivered according to the agreed schedule.'
   },
   {
-    question: 'Do you shoot on cameras?',
-    answer: 'Vela Shootz deliberately follows an iPhone-only mobile-first production workflow. We shoot exclusively on latest-generation iPhone Pro models in 4K HDR ProRes with professional gimbals, specialized optical accessories, and studio-grade wireless audio. This allows us to be fast, agile, unobtrusive, and craft content tailored natively for 9:16 mobile screens.'
+    question: 'How does booking and payment work?',
+    answer: 'A 50% advance payment is required to reserve and block your date and slot. The remaining 50% balance is payable according to the agreed delivery/payment schedule. A date is only considered reserved once the advance payment is received, and the advance is non-refundable.'
   },
   {
-    question: 'Can I request extra reels or hours?',
-    answer: 'Yes! You can add extra hours or additional reels directly when selecting your package or during booking. Quick Reels supports +1 Hour & +1 Reel for ₹550; Half Day supports extra reels at ₹299 each.'
+    question: 'Can I request extra reels or shooting time?',
+    answer: 'Yes! Quick Reels supports +1 Extra Hour + 1 Extra Reel for ₹699; Half Day supports additional reels at ₹399 each; Promotions supports additional campaign reels at ₹699 each. Additional editing does not automatically extend shooting time unless booked separately.'
   },
   {
-    question: 'Can I customize a package?',
-    answer: "Absolutely. For Family Events, Brand Campaigns, and Multi-Day Weddings, click 'Let's Have A Talk' to submit your event specifics, and we will build a custom deliverables package tailored to your exact budget and timeline."
+    question: 'What is your revision policy?',
+    answer: 'Each included reel comes with 1 minor revision (small clip replacement, text correction, audio adjustment, or small timing adjustment). Completely new concepts, re-edits, new scripts, or new footage are treated as additional work.'
   },
   {
-    question: 'Do you travel for shoots?',
-    answer: 'Yes, we travel for weddings, corporate summits, and college festivals. Travel and accommodation are arranged transparently based on your destination.'
+    question: 'Is raw footage included?',
+    answer: 'Raw footage is not included in any standard package. Raw footage can only be provided if separately agreed and priced before delivery.'
   },
   {
-    question: 'Can I book a specific time slot?',
-    answer: 'Yes, our slot booking system lets you pick an exact available morning, afternoon, or evening time window. Once confirmed, that slot is locked exclusively for your event.'
+    question: 'Do you shoot on cameras or mobile?',
+    answer: 'Vela Shootz follows an iPhone-first cinematic production workflow. We shoot exclusively on latest-generation iPhone Pro models in 4K HDR ProRes with professional gimbals and studio-grade wireless audio — built specifically for 9:16 vertical social reels.'
+  },
+  {
+    question: 'What does "1 Function" mean for Wedding Essentials?',
+    answer: 'One function means one separately scheduled event (e.g. Haldi = 1 function, Sangeet = 1 function, or Wedding Ceremony = 1 function). Wedding Essentials (₹14,999) covers ONE function up to 8 hours. Multiple functions require a custom quote or the 3-day Full Marriage package (₹59,999).'
   },
   {
     question: 'Can I reschedule my booking?',
-    answer: 'Yes, rescheduling is permitted up to 48 hours before your shoot time subject to date and slot availability.'
-  },
-  {
-    question: 'Do you cover weddings?',
-    answer: 'Yes! We offer dedicated Wedding Essentials (Haldi + Marriage / 2 Days, 10 Reels, 20 Portraits) and Full Marriage 3-Day luxury coverage designed specifically for viral, emotional, high-speed wedding storytelling.'
-  },
-  {
-    question: 'Can businesses book recurring content?',
-    answer: 'Yes, we offer monthly retainer packages for businesses, restaurants, cafes, and creators requiring consistent weekly reels and promotional media.'
+    answer: 'Rescheduling is subject to team and slot availability with advance notice. For weddings, rescheduling terms are stricter because multiple creators and dates are blocked.'
   }
 ];
 

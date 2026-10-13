@@ -98,7 +98,7 @@ function buildCustomerConfirmationHtml(booking) {
       <p style="margin:0;">
         <a href="mailto:ganeshthummala48@gmail.com" style="color:#E5AD36;text-decoration:none;font-size:13px;font-weight:600;">ganeshthummala48@gmail.com</a>
         <span style="color:#4A3A2A;margin:0 8px;">|</span>
-        <a href="tel:+917095891554" style="color:#E5AD36;text-decoration:none;font-size:13px;font-weight:600;">+91 70958 91554</a>
+        <a href="tel:+918978270208" style="color:#E5AD36;text-decoration:none;font-size:13px;font-weight:600;">+91 89782 70208</a>
       </p>
       <p style="color:#4A3A2A;font-size:11px;margin:16px 0 0;">© ${new Date().getFullYear()} Vela Shootz · Premium iPhone Cinematography</p>
     </div>

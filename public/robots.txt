@@ -1,0 +1,6 @@
+# Vela Shootz — velashootz.in
+User-agent: *
+Allow: /
+Disallow: /admin
+
+Sitemap: https://velashootz.in/sitemap.xml

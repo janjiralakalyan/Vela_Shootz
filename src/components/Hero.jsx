@@ -40,6 +40,7 @@ export function Hero({ navigateTo }) {
 
   return (
     <section
+      id="hero-section"
       style={{
         position: 'relative',
         minHeight: 'calc(100vh - 78px)',

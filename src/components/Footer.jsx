@@ -49,7 +49,7 @@ export function Footer({ navigateTo }) {
   };
 
   const handleWhatsApp = () => {
-    window.open('https://wa.me/917095891554?text=' + encodeURIComponent('Hello Vela Shootz! I would like to know more about booking a shoot.'), '_blank');
+    window.open('https://wa.me/918978270208?text=' + encodeURIComponent('Hello Vela Shootz! I would like to know more about booking a shoot.'), '_blank');
   };
 
   return (
@@ -285,17 +285,47 @@ export function Footer({ navigateTo }) {
           </div>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', fontSize: '0.82rem', color: 'var(--text-dim)' }}>
-            <span style={{ cursor: 'pointer' }} onClick={() => alert('Privacy Policy: Vela Shootz respects client privacy. Client footage is stored securely and delivered via encrypted private galleries.')}>
-              Privacy Policy
+            <span
+              style={{ cursor: 'pointer', transition: 'color 0.2s ease' }}
+              onClick={() => {
+                navigateTo('pricing');
+                setTimeout(() => {
+                  const el = document.getElementById('policy-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }, 150);
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--gold-primary)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-dim)'}
+            >
+              Booking & Payment Policy (50% Advance)
             </span>
-            <span style={{ cursor: 'pointer' }} onClick={() => alert('Terms & Conditions: All shoots are booked on a slot-reservation basis. Rescheduling is supported up to 48 hours prior.')}>
-              Terms & Conditions
+            <span
+              style={{ cursor: 'pointer', transition: 'color 0.2s ease' }}
+              onClick={() => {
+                navigateTo('pricing');
+                setTimeout(() => {
+                  const el = document.getElementById('policy-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }, 150);
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--gold-primary)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-dim)'}
+            >
+              Terms & Revisions Policy
             </span>
-            <span style={{ cursor: 'pointer' }} onClick={() => alert('Cancellation Policy: Cancellations 48h before shoot are eligible for full slot credit towards future booking dates.')}>
-              Cancellation Policy
-            </span>
-            <span style={{ cursor: 'pointer' }} onClick={() => alert('Refund Policy: Deposits can be credited towards alternate dates in accordance with weather or rescheduling terms.')}>
-              Refund Policy
+            <span
+              style={{ cursor: 'pointer', transition: 'color 0.2s ease' }}
+              onClick={() => {
+                navigateTo('pricing');
+                setTimeout(() => {
+                  const el = document.getElementById('policy-section');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                }, 150);
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'var(--gold-primary)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-dim)'}
+            >
+              Cancellation & Rescheduling
             </span>
           </div>
         </div>
